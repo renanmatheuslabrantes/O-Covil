@@ -1,0 +1,738 @@
+/* Vídeo de fundo para a seção Nossa Comunidade */
+.comunidade-bg-video-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 400px;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.comunidade-bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    opacity: 0.5;
+}
+.comunidade-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    padding: 48px 0;
+}
+@media (max-width: 700px) {
+    .comunidade-bg-video-wrapper {
+        min-height: 250px;
+    }
+    .comunidade-content {
+        padding: 24px 0;
+    }
+}
+/* Exemplo de uso da fonte medieval */
+.titulo-medieval {
+    font-family: 'IM Fell English SC', serif;
+    letter-spacing: 1px;
+    font-size: 2.5rem;
+    color: var(--cor-primaria);
+    text-align: center;
+}
+.carousel-indicators {
+    display: none !important;
+}
+.carousel-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 500px;
+}
+.hero-carousel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+/* Carrossel Horizontal (slides lado a lado) */
+.carousel-horizontal-section {
+    width: 100vw;
+    background: var(--cor-fundo-secao);
+    padding: 48px 0 56px 0;
+    display: flex;
+    justify-content: center;
+}
+.carousel-horizontal {
+    display: flex;
+    gap: 32px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    justify-content: center;
+}
+.slide-horizontal {
+    background: #181818;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px 0 rgba(0,0,0,0.18);
+    padding: 18px 18px 24px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 350px;
+    min-width: 300px;
+    max-width: 400px;
+}
+.slide-horizontal img,
+.slide-horizontal .video-container {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+.slide-horizontal h2 {
+    color: var(--cor-primaria);
+    font-family: var(--fonte-titulos);
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+.slide-horizontal p {
+    color: var(--cor-texto-principal);
+    text-align: center;
+    font-size: 1rem;
+}
+.slide-horizontal .video-container iframe {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+}
+@media (max-width: 1100px) {
+    .carousel-horizontal {
+        flex-direction: column;
+        align-items: center;
+        gap: 32px;
+    }
+    .slide-horizontal {
+        width: 90vw;
+        max-width: 500px;
+    }
+}
+
+/* Responsividade para vídeos do YouTube no carrossel */
+.video-container {
+    width: 100%;
+    max-width: 100%;
+    height: 400px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.video-container iframe {
+    width: 100%;
+    height: 100%;
+    border-radius: 12px;
+}
+/* Formulário de Alistamento */
+.form-section {
+    background: var(--cor-fundo-secao);
+    padding: 48px 0 64px 0;
+    margin-top: 40px;
+}
+
+.form-section h2 {
+    color: var(--cor-primaria);
+    font-family: var(--fonte-titulos);
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.alistamento-form {
+    max-width: 500px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    background: rgba(10,10,10,0.85);
+    padding: 2rem 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px 0 rgba(0,0,0,0.25);
+}
+
+.alistamento-form label {
+    color: var(--cor-primaria);
+    font-weight: bold;
+    margin-bottom: 0.2rem;
+}
+
+.alistamento-form input,
+.alistamento-form textarea {
+    background: #181818;
+    color: var(--cor-texto-principal);
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    font-size: 1rem;
+    font-family: var(--fonte-corpo);
+    resize: none;
+}
+
+.alistamento-form input:focus,
+.alistamento-form textarea:focus {
+    outline: 2px solid var(--cor-primaria);
+    border-color: var(--cor-primaria);
+}
+
+.alistamento-form button.cta-button {
+    margin-top: 1rem;
+    width: 100%;
+    font-size: 1.1rem;
+}
+/* Centralização do carrossel na hero */
+.hero {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    min-height: 600px;
+    position: relative;
+}
+
+.hero-content {
+    flex: 1 1 0;
+    z-index: 2;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-carousel,
+.carousel-controls,
+.carousel-indicators {
+    z-index: 2;
+}
+
+.hero-carousel {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 992px) {
+    .hero {
+        flex-direction: column;
+        gap: 20px;
+        min-height: unset;
+    }
+    .hero-content, .hero-carousel {
+        width: 100%;
+        text-align: center;
+        align-items: center;
+    }
+}
+/* ===================== */
+/* CARROSSEL */
+.hero-carousel {
+    position: relative;
+    text-align: center;
+    color: white;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* Cada slide */
+.slide {
+    display: none;
+    animation: fade 1s ease-in-out;
+    min-height: 430px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* Slide ativo */
+.slide.active {
+    display: block;
+}
+
+/* Imagens */
+.slide img {
+    width: 100%;
+    max-width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+/* Vídeos */
+.slide video {
+    width: 100%;
+    max-height: 400px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+/* Animação */
+@keyframes fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Botões */
+.hero-carousel {
+    position: relative;
+    /* ...demais regras já existentes... */
+}
+
+.carousel-controls {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transform: translateY(-50%);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 3;
+}
+
+.hero-carousel:hover .carousel-controls {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.carousel-controls button {
+    background: rgba(0,0,0,0.5);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 2rem;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: background 0.3s;
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.25);
+    pointer-events: all;
+}
+
+.carousel-controls button:hover {
+    background: rgba(0,0,0,0.8);
+}
+
+/* Indicadores (bolinhas) */
+.carousel-indicators {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 24px;
+    position: static;
+}
+
+.dot {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.dot.active {
+    background: white;
+}
+/* --- Variáveis e Configurações Globais --- */
+        
+/* A pseudo-classe :root permite definir variáveis CSS globais. Mudar um valor aqui afeta o site inteiro, facilitando a personalização. */
+:root {
+    --cor-primaria: #c89b3c;       /* Um tom de dourado envelhecido, para detalhes, botões e títulos. */
+    --cor-fundo-escuro: #0a0a0a;   /* Preto quase absoluto para o fundo principal, criando imersão. */
+    --cor-fundo-secao: #121212;   /* Um cinza muito escuro para variar o fundo de algumas seções. */
+    --cor-texto-principal: #e0e0e0;/* Um cinza claro para textos, que é mais confortável de ler em fundos escuros do que o branco puro. */
+    --cor-texto-secundario: #a0a0a0;/* Cinza para textos de menor importância. */
+    --fonte-titulos: 'Cinzel', serif; /* Fonte para todos os títulos, com estilo de fantasia. */
+    --fonte-corpo: 'Roboto', sans-serif; /* Fonte para parágrafos e textos gerais, focada em legibilidade. */
+}
+
+/* Seletor universal (*) para aplicar um "reset" básico. Removemos margens e paddings que os navegadores aplicam por padrão, nos dando controle total sobre o espaçamento. */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Garante que a largura e altura de um elemento incluam o padding e a borda, e não os adicionem por fora. Facilita muito o layout. */
+}
+
+/* Suaviza a rolagem da página quando clicamos em um link de âncora (ex: ir para a seção #noticias). */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Estilos base para o corpo (<body>) da página. */
+body {
+    font-family: var(--fonte-corpo);
+    background-color: var(--cor-fundo-escuro);
+    color: var(--cor-texto-principal);
+    line-height: 1.7; /* Espaçamento entre linhas de texto, melhora a leitura. */
+    overflow-x: hidden; /* Impede a rolagem horizontal, um problema comum em layouts malfeitos. */
+}
+
+/* Classe utilitária para centralizar o conteúdo. Limita a largura máxima para que o site não fique excessivamente largo em telas grandes. */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto; /* O 'auto' nas margens esquerda e direita centraliza o container horizontalmente. */
+}
+
+/* --- Estilos do Cabeçalho (Header) --- */
+header {
+    background-color: rgba(10, 10, 10, 0.7); /* Fundo preto com 70% de opacidade (semi-transparente). */
+    backdrop-filter: blur(10px); /* Efeito de "vidro fosco" no fundo, que desfoca o que está atrás. Moderno e elegante. */
+    border-bottom: 1px solid rgba(200, 155, 60, 0.2); /* Linha dourada sutil na parte inferior. */
+    padding: 1rem 0; /* Espaçamento interno vertical. */
+    position: fixed; /* Fixa o cabeçalho no topo da tela, mesmo ao rolar a página. */
+    width: 100%;
+    top: 0;
+    z-index: 1000; /* Define a "camada" do elemento. Um z-index alto garante que ele fique na frente de outros conteúdos. */
+    transition: background-color 0.3s ease; /* Animação suave para a cor de fundo. */
+}
+
+.header-container {
+    display: flex; /* Ativa o layout flexbox, que alinha os itens em uma linha. */
+    justify-content: space-between; /* Distribui os itens: o primeiro no início, o último no fim, e o resto no meio. */
+    align-items: center; /* Alinha os itens verticalmente ao centro. */
+}
+
+.logo {
+    font-family: var(--fonte-titulos);
+    font-size: 1.8rem;
+    color: var(--cor-primaria);
+    text-decoration: none;
+}
+
+/* Estilos para a lista de navegação. */
+nav ul {
+    list-style: none; /* Remove os marcadores de lista (bolinhas). */
+    display: flex;
+    gap: 2rem; /* Cria um espaço de 2rem entre cada item da navegação. */
+}
+
+nav a {
+    color: var(--cor-texto-principal);
+    text-decoration: none; /* Remove o sublinhado dos links. */
+    text-transform: uppercase; /* Deixa o texto em maiúsculas. */
+    font-weight: 700;
+    transition: color 0.3s ease; /* Animação suave para a transição de cor ao passar o mouse. */
+}
+
+nav a:hover {
+    color: var(--cor-primaria); /* Muda a cor do link para dourado no hover. */
+}
+
+/* Estilo para o botão de "Call to Action" (Chamada para Ação). */
+.cta-button {
+    background-color: var(--cor-primaria);
+    color: var(--cor-fundo-escuro);
+    padding: 0.6rem 1.5rem;
+    border: 2px solid var(--cor-primaria);
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: all 0.3s ease; /* Anima todas as propriedades que mudarem (background, cor, etc). */
+}
+
+.cta-button:hover {
+    background-color: transparent; /* Fundo fica transparente no hover. */
+    color: var(--cor-primaria); /* Texto fica dourado. */
+    transform: scale(1.05); /* Aumenta ligeiramente o tamanho do botão. */
+}
+
+/* Ícone do menu hamburguer para telas pequenas */
+.menu-toggle {
+    display: none; /* Escondido por padrão em telas grandes. */
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.menu-toggle .bar {
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    background-color: var(--cor-texto-principal);
+    transition: all 0.3s ease-in-out;
+}
+
+/* --- Seção Principal (Hero) --- */
+
+/* MODIFICAÇÃO: Estilos para o vídeo de fundo */
+#hero-video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: 0; /* Camada mais baixa, atrás de tudo */
+    object-fit: cover;
+}
+
+/* MODIFICAÇÃO: Regra .hero ajustada para o vídeo */
+.hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+    /* A propriedade 'background-image' foi removida para dar lugar ao vídeo */
+}
+
+/* MODIFICAÇÃO: Sobreposição escura para garantir legibilidade do texto sobre o vídeo */
+.hero::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Ajuste a opacidade (0.6 = 60% escuro) se precisar */
+    z-index: 1; /* Fica entre o vídeo e o conteúdo */
+}
+
+/* MODIFICAÇÃO: Ajuste de camadas (z-index) para o conteúdo */
+.hero-content {
+    position: relative;
+    z-index: 3; /* Na frente da sobreposição e das partículas */
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+.main-title {
+    font-family: var(--fonte-titulos);
+    font-size: 5rem; /* Tamanho de fonte grande para impacto. */
+    color: white;
+    text-shadow: 0 0 15px rgba(0, 0, 0, 0.8); /* Sombra no texto para destacá-lo do fundo. */
+    margin-bottom: 1rem;
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+}
+
+/* --- EFEITO DE PARTÍCULAS (FAGULHAS) --- */
+.particles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2; /* MODIFICAÇÃO: Fica na frente da sobreposição, mas atrás do texto */
+}
+
+.particle {
+    position: absolute;
+    bottom: -20px; /* Começa fora da tela, na parte de baixo. */
+    background: var(--cor-primaria);
+    border-radius: 50%;
+    opacity: 0;
+    box-shadow: 0 0 5px var(--cor-primaria), 0 0 10px var(--cor-primaria); /* Efeito de brilho. */
+    animation-name: rise; /* Nome da animação. */
+    animation-timing-function: linear;
+    animation-iteration-count: infinite; /* A animação se repete para sempre. */
+}
+
+/* Animação que faz as partículas subirem e desaparecerem. */
+@keyframes rise {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(-105vh); /* Move a partícula para cima, para fora da tela. */
+        opacity: 0;
+    }
+}
+
+/* Estilos individuais para cada partícula para criar um efeito aleatório. */
+.particle:nth-child(1) { width: 2px; height: 2px; left: 10%; animation-duration: 15s; animation-delay: 1s; }
+.particle:nth-child(2) { width: 3px; height: 3px; left: 20%; animation-duration: 10s; animation-delay: 3s; }
+.particle:nth-child(3) { width: 1px; height: 1px; left: 30%; animation-duration: 20s; animation-delay: 2s; }
+.particle:nth-child(4) { width: 2px; height: 2px; left: 40%; animation-duration: 12s; animation-delay: 5s; }
+.particle:nth-child(5) { width: 4px; height: 4px; left: 50%; animation-duration: 8s; animation-delay: 0s; }
+.particle:nth-child(6) { width: 2px; height: 2px; left: 60%; animation-duration: 18s; animation-delay: 4s; }
+.particle:nth-child(7) { width: 1px; height: 1px; left: 70%; animation-duration: 14s; animation-delay: 6s; }
+.particle:nth-child(8) { width: 3px; height: 3px; left: 80%; animation-duration: 9s; animation-delay: 1s; }
+.particle:nth-child(9) { width: 2px; height: 2px; left: 90%; animation-duration: 22s; animation-delay: 7s; }
+.particle:nth-child(10) { width: 1px; height: 1px; left: 5%; animation-duration: 13s; animation-delay: 0s; }
+.particle:nth-child(11) { width: 3px; height: 3px; left: 15%; animation-duration: 11s; animation-delay: 4s; }
+.particle:nth-child(12) { width: 2px; height: 2px; left: 25%; animation-duration: 16s; animation-delay: 6s; }
+.particle:nth-child(13) { width: 1px; height: 1px; left: 35%; animation-duration: 19s; animation-delay: 8s; }
+.particle:nth-child(14) { width: 4px; height: 4px; left: 45%; animation-duration: 7s; animation-delay: 3s; }
+.particle:nth-child(15) { width: 2px; height: 2px; left: 55%; animation-duration: 14s; animation-delay: 1s; }
+
+
+/* --- Seções de Conteúdo Genéricas --- */
+.content-section {
+    padding: 6rem 0; /* Espaçamento vertical generoso para separar as seções. */
+}
+
+.content-section h2 {
+    font-family: var(--fonte-titulos);
+    font-size: 3rem;
+    text-align: center;
+    color: var(--cor-primaria);
+    margin-bottom: 3rem;
+}
+
+/* Classe para alternar a cor de fundo das seções. */
+.dark-bg {
+    background-color: var(--cor-fundo-secao);
+    border-top: 1px solid rgba(200, 155, 60, 0.1);
+    border-bottom: 1px solid rgba(200, 155, 60, 0.1);
+}
+
+#sobre p {
+    max-width: 800px; /* Limita a largura do parágrafo para melhor leitura. */
+    margin: 0 auto;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+/* --- Grade de Notícias --- */
+.news-grid {
+    display: grid; /* Ativa o layout em grade (Grid Layout). */
+    /* Cria colunas responsivas: o navegador tentará criar o máximo de colunas com no mínimo 300px de largura. Se não couber, ele quebra a linha. Perfeito para responsividade sem media queries. */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem; /* Espaço entre os cards. */
+}
+
+.news-card {
+    background-color: var(--cor-fundo-escuro);
+    border: 1px solid rgba(200, 155, 60, 0.2);
+    border-radius: 8px;
+    overflow: hidden; /* Garante que a imagem com cantos retos não "vaze" para fora das bordas arredondadas do card. */
+    display: flex;
+    flex-direction: column; /* Organiza o conteúdo do card em coluna. */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Animação suave para o card. */
+}
+
+.news-card:hover {
+    transform: translateY(-10px); /* Move o card 10px para cima no hover. */
+    box-shadow: 0 10px 30px rgba(200, 155, 60, 0.1); /* Adiciona uma sombra dourada sutil. */
+}
+
+.news-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover; /* Garante que a imagem cubra o espaço sem distorcer, cortando o excesso se necessário. */
+}
+
+.card-content {
+    padding: 1.5rem;
+    flex-grow: 1; /* Faz esta área crescer para ocupar o espaço disponível, alinhando os botões na base. */
+    display: flex;
+    flex-direction: column;
+}
+
+.card-content h3 {
+    font-family: var(--fonte-titulos);
+    color: var(--cor-primaria);
+    margin-bottom: 0.5rem;
+}
+
+.card-content p {
+    color: var(--cor-texto-secundario);
+    margin-bottom: 1rem;
+    flex-grow: 1; /* Faz o parágrafo ocupar o espaço, empurrando o link para baixo. */
+}
+
+.card-content a {
+    color: var(--cor-primaria);
+    text-decoration: none;
+    font-weight: 700;
+    align-self: flex-start; /* Alinha o link à esquerda. */
+}
+
+.card-content a:hover {
+    text-decoration: underline;
+}
+
+
+/* --- Rodapé (Footer) --- */
+footer {
+    padding: 3rem 0;
+    text-align: center;
+    border-top: 1px solid rgba(200, 155, 60, 0.1);
+}
+
+.social-links a {
+    color: var(--cor-texto-secundario);
+    text-decoration: none;
+    margin: 0 1rem;
+    font-weight: 700;
+    transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+    color: var(--cor-primaria);
+}
+
+.copyright {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* --- Animações --- */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Design Responsivo (Media Queries) --- */
+/* Estas regras só serão aplicadas quando a largura da tela for 992px ou menor. */
+@media (max-width: 992px) {
+    .nav-links, .header-cta {
+        display: none; /* Esconde a navegação e o botão em telas menores. */
+    }
+    .menu-toggle {
+        display: block; /* Mostra o menu hamburguer. */
+    }
+}
+
+/* Para telas de celular */
+@media (max-width: 768px) {
+    .main-title {
+        font-size: 3.5rem; /* Diminui a fonte do título principal. */
+    }
+    .subtitle {
+        font-size: 1.2rem;
+    }
+    .content-section h2 {
+        font-size: 2.5rem;
+    }
+}
