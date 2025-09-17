@@ -159,7 +159,7 @@
                     <article class="news-card">
                         <img src="https://images.ctfassets.net/j95d1p8hsuun/6EqlZy3e7oHf4WH0c30WO/c31b699e6ecc024d63d1ac5be91faf62/NWA_S10-Announce-Screen-Castle_Final_1920x1080_Web_CT-000021565.jpg" alt="Castelo Card">
                         <div class="card-content">
-                            <h3>Atualização Steam: Nighthaven</h3>
+                            <h3>Nighthaven</h3>
                             <p>
                                 Confira o resumo da notícia oficial da Steam sobre a Temporada 10: Nighthaven, com todas as novidades, imagens e detalhes traduzidos para o português.
                             </p>
@@ -259,37 +259,21 @@
                         <textarea id="motivo" name="motivo" rows="4" required></textarea>
 
                         <button type="submit" class="cta-button">Enviar Alistamento</button>
-                        <!-- Modal de confirmação -->
-                        <div id="modal-alistamento" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); z-index:9999; justify-content:center; align-items:center;">
-                            <div style="background:#1a1816; color:#b98c53; font-family:'Cinzel', 'IM Fell English SC', serif; padding:32px 40px; border-radius:16px; box-shadow:0 4px 24px #000; text-align:center; max-width:90vw;">
-                                <h2 style="font-family:'Cinzel', serif; font-size:2rem; margin-bottom:12px;">Alistamento recebido</h2>
-                                <p style="font-family:'IM Fell English SC', serif; font-size:1.2rem; margin-bottom:24px;">Seu alistamento foi enviado com sucesso! Em breve entraremos em contato pelo Discord ou e-mail.</p>
-                                <button id="fechar-modal" type="button" style="background:#b98c53; color:#1a1816; font-family:'Cinzel', serif; border:none; border-radius:8px; padding:10px 24px; font-size:1rem; cursor:pointer; font-weight:bold;">Fechar</button>
-                            </div>
-                        </div>
                     </form>
+                    </form>
+                    <div id="mensagem-alistamento" style="display:none; color:#b98c53; font-family:'Cinzel', 'IM Fell English SC', serif; margin-top:18px; font-size:1.2rem; font-weight:bold; text-align:center;">Obrigado por se alistar ao Covil!</div>
                     <script>
-                    // Modal de confirmação após envio do formulário de alistamento
+                    // Mensagem simples após envio do formulário de alistamento
                     document.addEventListener('DOMContentLoaded', function() {
                         var form = document.querySelector('.alistamento-form');
-                        var modal = document.getElementById('modal-alistamento');
-                        var fechar = document.getElementById('fechar-modal');
-                        if(form && modal && fechar) {
+                        var mensagem = document.getElementById('mensagem-alistamento');
+                        if(form && mensagem) {
                             form.addEventListener('submit', function(e) {
-                                // Aguarda o envio do Formspree
                                 setTimeout(function(){
                                     form.reset();
-                                    modal.style.display = 'flex';
+                                    mensagem.style.display = 'block';
+                                    setTimeout(function(){ mensagem.style.display = 'none'; }, 4000);
                                 }, 500);
-                            });
-                            fechar.addEventListener('click', function() {
-                                modal.style.display = 'none';
-                            });
-                            // Fecha modal ao clicar fora do conteúdo
-                            modal.addEventListener('click', function(e) {
-                                if(e.target === modal) {
-                                    modal.style.display = 'none';
-                                }
                             });
                         }
                     });
