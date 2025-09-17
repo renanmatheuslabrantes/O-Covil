@@ -42,7 +42,7 @@
             </nav>
             
             <!-- Botão de "Chamada para Ação" destacado. -->
-            <a href="#noticias" class="cta-button header-cta">Junte-se ao Clã</a>
+            <a href="#form-alistamento" class="cta-button header-cta">Junte-se ao Clã</a>
             
             <!-- Botão do Menu Hamburguer (só aparece em telas pequenas) -->
             <button class="menu-toggle" aria-label="Abrir menu">
@@ -244,32 +244,56 @@
             <div class="container">
                 <h2>Aliste-se no Covil</h2>
                 <form class="alistamento-form">
-                    <label for="nome">Nome:</label>
-                    <input type="text" id="nome" name="nome" required>
+                    <!-- Formulário correto, sem duplicidade -->
+                    <form class="alistamento-form" action="https://formspree.io/f/xpwjgrjw" method="POST">
+                        <label for="nome">Nome:</label>
+                        <input type="text" id="nome" name="nome" required>
 
-                    <label for="email">E-mail:</label>
-                    <input type="email" id="email" name="email" required>
+                        <label for="discord">Nick do Discord:</label>
+                        <input type="text" id="discord" name="discord" placeholder="Ex: usuario#1234" required>
 
-                    <label for="motivo">Por que deseja se juntar ao Covil?</label>
-                    <textarea id="motivo" name="motivo" rows="4" required></textarea>
+                        <label for="email">E-mail:</label>
+                        <input type="email" id="email" name="email" required>
 
-                    <button type="submit" class="cta-button">Enviar Alistamento</button>
-                    <div id="mensagem-alistamento" style="display:none; color:green; margin-top:16px; font-weight:bold;">Obrigado por se alistar!</div>
-                <script>
-                // Mensagem de agradecimento após envio do formulário de alistamento
-                document.addEventListener('DOMContentLoaded', function() {
-                    var form = document.querySelector('.alistamento-form');
-                    var mensagem = document.getElementById('mensagem-alistamento');
-                    if(form && mensagem) {
-                        form.addEventListener('submit', function(e) {
-                            e.preventDefault();
-                            form.reset();
-                            mensagem.style.display = 'block';
-                            setTimeout(function(){ mensagem.style.display = 'none'; }, 4000);
-                        });
-                    }
-                });
-                </script>
+                        <label for="motivo">Por que deseja se juntar ao Covil?</label>
+                        <textarea id="motivo" name="motivo" rows="4" required></textarea>
+
+                        <button type="submit" class="cta-button">Enviar Alistamento</button>
+                        <!-- Modal de confirmação -->
+                        <div id="modal-alistamento" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.7); z-index:9999; justify-content:center; align-items:center;">
+                            <div style="background:#1a1816; color:#b98c53; font-family:'Cinzel', 'IM Fell English SC', serif; padding:32px 40px; border-radius:16px; box-shadow:0 4px 24px #000; text-align:center; max-width:90vw;">
+                                <h2 style="font-family:'Cinzel', serif; font-size:2rem; margin-bottom:12px;">Alistamento recebido</h2>
+                                <p style="font-family:'IM Fell English SC', serif; font-size:1.2rem; margin-bottom:24px;">Seu alistamento foi enviado com sucesso! Em breve entraremos em contato pelo Discord ou e-mail.</p>
+                                <button id="fechar-modal" type="button" style="background:#b98c53; color:#1a1816; font-family:'Cinzel', serif; border:none; border-radius:8px; padding:10px 24px; font-size:1rem; cursor:pointer; font-weight:bold;">Fechar</button>
+                            </div>
+                        </div>
+                    </form>
+                    <script>
+                    // Modal de confirmação após envio do formulário de alistamento
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var form = document.querySelector('.alistamento-form');
+                        var modal = document.getElementById('modal-alistamento');
+                        var fechar = document.getElementById('fechar-modal');
+                        if(form && modal && fechar) {
+                            form.addEventListener('submit', function(e) {
+                                // Aguarda o envio do Formspree
+                                setTimeout(function(){
+                                    form.reset();
+                                    modal.style.display = 'flex';
+                                }, 500);
+                            });
+                            fechar.addEventListener('click', function() {
+                                modal.style.display = 'none';
+                            });
+                            // Fecha modal ao clicar fora do conteúdo
+                            modal.addEventListener('click', function(e) {
+                                if(e.target === modal) {
+                                    modal.style.display = 'none';
+                                }
+                            });
+                        }
+                    });
+                    </script>
                 </form>
             </div>
         </section>
