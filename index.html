@@ -1,27 +1,31 @@
 <!DOCTYPE html>
 <!-- A tag 'lang="pt-br"' informa ao navegador e aos mecanismos de busca que o idioma desta página é Português do Brasil. -->
 <html lang="pt-br">
+
 <head>
     <!-- Metadados essenciais -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <!-- Título da página -->
     <title>O Covil</title>
 
     <!-- Favicon (logo na aba) -->
-    <link rel="icon" type="image/jpeg" href="images/Logo.jpeg">
+    <link rel="icon" type="image/jpeg" href="images/nwdb-logo.jpeg">
 
     <!-- Link para as fontes do Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=IM+Fell+English+SC&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=IM+Fell+English+SC&family=Roboto:wght@400;700&display=swap"
+        rel="stylesheet">
 
     <!-- Link para a sua folha de estilos externa (CSS ) -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/src/css/style.css">
 </head>
+
 <body>
-    
+
 
     <!-- O cabeçalho contém a identidade visual e a navegação principal do site. -->
     <header>
@@ -40,10 +44,10 @@
                     <li><a href="#comunidade">Comunidade</a></li>
                 </ul>
             </nav>
-            
+
             <!-- Botão de "Chamada para Ação" destacado. -->
             <a href="#form-alistamento" class="cta-button header-cta">Junte-se ao Clã</a>
-            
+
             <!-- Botão do Menu Hamburguer (só aparece em telas pequenas) -->
             <button class="menu-toggle" aria-label="Abrir menu">
                 <span class="bar"></span>
@@ -60,11 +64,12 @@
         <section class="hero">
             <!-- VÍDEO DE FUNDO: Adicionado para o background dinâmico -->
             <video autoplay muted loop playsinline id="hero-video">
-              <!-- SUBSTITUA "URL_DO_SEU_VIDEO.mp4" PELO LINK DO SEU VÍDEO -->
-              <source src="https://cdn.artstation.com/p/video_sources/002/211/683/isabella-movie.mp4" type="video/mp4">
-              Seu navegador não suporta vídeos.
+                <!-- SUBSTITUA "URL_DO_SEU_VIDEO.mp4" PELO LINK DO SEU VÍDEO -->
+                <source src="https://cdn.artstation.com/p/video_sources/002/211/683/isabella-movie.mp4"
+                    type="video/mp4">
+                Seu navegador não suporta vídeos.
             </video>
-            
+
 
             <!-- Container para as partículas de fundo -->
             <div class="particles-container">
@@ -84,154 +89,72 @@
                 <span class="particle"></span>
                 <span class="particle"></span>
             </div>
-        
-            
-           <!--- <div class="hero-content">
+
+
+            <!--- <div class="hero-content">
                 <h1 class="main-title">O Covil </h1>
                 <p class="subtitle">Onde as sombras forjam lendas e a honra é a única lei.</p>
                 <a href="#sobre" class="cta-button">Descubra Mais</a>
             <--</div>-->
-             
+
 
         </section>
-                <!-- Seção NWDB Brasil: iframe menor -->
-                <section id="nwdb" class="content-section">
-                                                            <!-- Seção removida: iframe agora está em uma página dedicada -->
-                </section>
+        <!-- Seção NWDB Brasil: iframe menor -->
+        <section id="nwdb" class="content-section">
+            <!-- Seção removida: iframe agora está em uma página dedicada -->
+        </section>
 
         <!-- Seção "Sobre": uma introdução ao tema do site. -->
         <section id="sobre" class="content-section">
             <div class="container">
                 <h2>A Nossa Saga</h2>
                 <p>
-                    No coração de terras imortais, ergue-se O Covil , um bastião para guerreiros e arcanistas que buscam glória sob a bandeira do Covil . Não somos heróis de contos de fadas; somos a força implacável que prospera onde os outros temem pisar. Honra, poder e lealdade são os pilares que sustentam nossa fortaleza. Junte-se a nós e escreva seu nome em Aeternum.
+                    No coração de terras imortais, ergue-se O Covil , um bastião para guerreiros e arcanistas que buscam
+                    glória sob a bandeira do Covil . Não somos heróis de contos de fadas; somos a força implacável que
+                    prospera onde os outros temem pisar. Honra, poder e lealdade são os pilares que sustentam nossa
+                    fortaleza. Junte-se a nós e escreva seu nome em Aeternum.
                 </p>
             </div>
         </section>
-         <!-- Script do carrossel/slider -->
-        <script src="script.js"></script>
 
-
-
-    <!-- Seção Carrossel Horizontal -->
-    <section class="carousel-section">
-        <div class="hero-carousel">
-            <!-- SLIDE 1 (IMAGEM) -->
-            <div class="slide active">
-                <img src="/images/slide01.png" alt="Slide 1">
-                <h2></h2>
-                <p>Venha para nossa Raid.</p>
+        <section class="carousel-section">
+            <div class="hero-carousel" id="carousel">
+                <div class="carousel-controls">
+                    <button id="prev">‹</button>
+                    <button id="next">›</button>
+                </div>
             </div>
-            <!-- SLIDE 2 (VÍDEO) -->
-            <div class="slide">
-                <a href="#referencia-futura" class="slide-link">
-                    <img src="/images/slide02.png" alt="Slide 2">
-                </a>
-                <h2></h2>
-                <p>Garanta sua vaga para o sábado.</p>
+            <!-- INDICADORES (BOLINHAS) -->
+            <div class="carousel-indicators">
+                <span class="dot active" data-slide="0"></span>
+                <span class="dot" data-slide="1"></span>
+                <span class="dot" data-slide="2"></span>
             </div>
-            <!-- SLIDE 3 (IMAGEM) -->
-            <div class="slide">
-                <img src="/images/imagens02.jpg" alt="Slide 3">
-                <h2></h2>
-                <p>Venha e faça parte do Covil.</p>
-            </div>
-            <!-- CONTROLES DE NAVEGAÇÃO -->
-            <div class="carousel-controls">
-                <button id="prev">‹</button>
-                <button id="next">›</button>
-            </div>
-        </div>
-        <!-- INDICADORES (BOLINHAS) -->
-        <div class="carousel-indicators">
-            <span class="dot active" data-slide="0"></span>
-            <span class="dot" data-slide="1"></span>
-            <span class="dot" data-slide="2"></span>
-        </div>
-    </section>
+        </section>
 
         <!-- Seção de Notícias: mostra as últimas atualizações em formato de cards. -->
         <section id="noticias" class="content-section dark-bg">
             <div class="container">
                 <h2>Nossas Novidades</h2>
-                <div class="news-grid">
-                    <!-- Card Atualização Steam: Nighthaven (página dedicada) -->
-                    <article class="news-card">
-                        <img src="https://images.ctfassets.net/j95d1p8hsuun/6EqlZy3e7oHf4WH0c30WO/c31b699e6ecc024d63d1ac5be91faf62/NWA_S10-Announce-Screen-Castle_Final_1920x1080_Web_CT-000021565.jpg" alt="Castelo Card">
-                        <div class="card-content">
-                            <h3>Nighthaven</h3>
-                            <p>
-                                Confira o resumo da notícia oficial da Steam sobre a Temporada 10: Nighthaven, com todas as novidades, imagens e detalhes traduzidos para o português.
-                            </p>
-                            <a href="p/blog/steam-nighthaven/">Ver detalhes &rarr;</a>
-                        </div>
-                    </article>
-                    <!-- Card Atualização Season 10: Nighthaven (página dedicada) -->
-                    <article class="news-card">
-                        <img src="/images/anuncio temporada 10.png" alt="Capa Anúncio Temporada 10">
-                        <div class="card-content">
-                            <h3>Temporada 10: Nighthaven</h3>
-                            <p>
-                                Explore a nova zona Nighthaven, enfrente ameaças nas catacumbas, descubra a história da Lágrima de Gaia e prepare-se para batalhas épicas no novo mapa "A Torre". Veja todos os detalhes da atualização!
-                            </p>
-                            <a href="p/blog/nighthaven/">Ver detalhes &rarr;</a>
-                        </div>
-                    </article>
-                    
-                    <!-- Card NWDB Brasil (mais recente) -->
-                    <article class="news-card">
-                        <img src="/images/Logo.jpeg" alt="Logo NWDB Brasil">
-                        <div class="card-content">
-                            <h3>Banco de Dados NWDB Brasil</h3>
-                            <p>O NWDB Brasil é o maior banco de dados sobre o jogo New World. Nele você encontra informações completas sobre armas, equipamentos, builds, mapas, receitas, recursos, eventos e tudo que envolve o universo do New World. Ideal para quem quer montar o melhor personagem, entender as mecânicas do jogo ou acompanhar as novidades e atualizações. O site é atualizado constantemente e traz detalhes em português para facilitar sua jornada em Aeternum.</p>
-                            <a href="https://br.nwdb.info/" target="_blank" rel="noopener" style="font-weight:bold; color:#b98c53;">Acessar NWDB Brasil &rarr;</a>
-                        </div>
-                    </article>
-
-                    <!-- Card Amigável com Iniciantes -->
-                    <article class="news-card">
-                        <img src="https://cdna.artstation.com/p/assets/images/images/077/789/992/large/alex-stratulat-nwam-v008.jpg?1720372873" alt="Imagem de runas mágicas brilhando">
-                        <div class="card-content">
-                            <h3>Amigavel Com iniciantes</h3>
-                            <p>Ser novato não quer dizer se fraco, venha e vamos lapidar esse diamante para que se torne uma das joias mais puras em toda Aeternum.</p>
-                            <a href="#form-alistamento">Como se Alistar &rarr;</a>
-                        </div>
-                    </article>
-
-                    <!-- Card Raids -->
-                    <article class="news-card" id="raids">
-                        <img src="https://cdnb.artstation.com/p/assets/images/images/077/789/997/large/alex-stratulat-nwam-v010.jpg?1720372883" alt="Imagem de uma batalha épica">
-                        <div class="card-content">
-                            <h3>Raids</h3>
-                            <p>Nossas legiões marcharam sobre as Gorgonas e, as 20:30hrs na Quarta e Sabados as 21:30hrs para ajudar a se equipar  .</p>
-                            <a href="p/raids/" style="font-weight:bold; color:#b98c53;">Ver detalhes das Raids &rarr;</a>
-                        </div>
-                    </article>
-
-                    <!-- Card Canais da Twitch -->
-                    <article class="news-card">
-                        <img src="https://i.pinimg.com/736x/da/05/c5/da05c5675e0f2d956d6e5ffa6ccafc78.jpg" alt="Imagem de um guerreiro ajoelhado">
-                        <div class="card-content">
-                            <h3><a href="p/twitch/" style="color:inherit; text-decoration:none; cursor:pointer;">Canais da Twitch</a></h3>
-                            <p>O Covil temos nossos representantes. Se você tem a coragem e a força para lutar sob nosso estandarte, sua hora chegou venha ve veja as Lives e melhore sua gameplay em Dungeons , Raids e PVP.</p>
-                            <a href="p/twitch/">Venha nos ver &rarr;</a>
-                        </div>
-                    </article>
+                <div class="news-grid" id="news-container">
                 </div>
             </div>
         </section>
-        
-         <!-- Seção Comunidade (Exemplo de outra seção ) -->
+
+        <!-- Seção Comunidade (Exemplo de outra seção ) -->
         <section id="comunidade" class="content-section">
             <div class="comunidade-bg-video-wrapper">
                 <video autoplay muted loop playsinline class="comunidade-bg-video">
-                  <source src="https://cdn.artstation.com/p/video_sources/002/241/129/4logo.mp4" type="video/mp4">
-                  Seu navegador não suporta vídeos.
+                    <source src="https://cdn.artstation.com/p/video_sources/002/241/129/4logo.mp4" type="video/mp4">
+                    Seu navegador não suporta vídeos.
                 </video>
                 <div class="container comunidade-content">
                     <h2>Nossa Comunidade</h2>
                     <p>
-                       A força do Covil está em seus membros. Conecte-se conosco em nossas plataformas, participe de nossas Raids Colônia das Gorgonas toda Quarta as 20:30hrs e Sábados as 21:30hrs  e planeje as próximas conquistas junto a nossos companheiros de armas. A comunicação é a chave para a dominação então faça parte do nosso Discord .
+                        A força do Covil está em seus membros. Conecte-se conosco em nossas plataformas, participe de
+                        nossas Raids Colônia das Gorgonas toda Quarta as 20:30hrs e Sábados as 21:30hrs e planeje as
+                        próximas conquistas junto a nossos companheiros de armas. A comunicação é a chave para a
+                        dominação então faça parte do nosso Discord .
                     </p>
                 </div>
             </div>
@@ -239,67 +162,66 @@
 
     </main>
 
-        <!-- Formulário de Alistamento -->
-        <section id="form-alistamento" class="form-section">
-            <div class="container">
-                <h2>Aliste-se no Covil</h2>
-                <form class="alistamento-form">
-                    <!-- Formulário correto, sem duplicidade -->
-                    <form class="alistamento-form" action="https://formspree.io/f/xpwjgrjw" method="POST">
-                        <label for="nome">Nome:</label>
-                        <input type="text" id="nome" name="nome" required>
+    <!-- Formulário de Alistamento -->
+    <section id="form-alistamento" class="form-section">
+        <div class="container">
+            <h2>Aliste-se no Covil</h2>
+            <form class="alistamento-form">
+                <!-- Formulário correto, sem duplicidade -->
+                <form class="alistamento-form" action="https://formspree.io/f/xpwjgrjw" method="POST">
+                    <label for="nome">Nome:</label>
+                    <input type="text" id="nome" name="nome" required>
 
-                        <label for="discord">Nick do Discord:</label>
-                        <input type="text" id="discord" name="discord" placeholder="Ex: usuario#1234" required>
+                    <label for="discord">Nick do Discord:</label>
+                    <input type="text" id="discord" name="discord" placeholder="Ex: usuario#1234" required>
 
-                        <label for="email">E-mail:</label>
-                        <input type="email" id="email" name="email" required>
+                    <label for="email">E-mail:</label>
+                    <input type="email" id="email" name="email" required>
 
-                        <label for="motivo">Por que deseja se juntar ao Covil?</label>
-                        <textarea id="motivo" name="motivo" rows="4" required></textarea>
+                    <label for="motivo">Por que deseja se juntar ao Covil?</label>
+                    <textarea id="motivo" name="motivo" rows="4" required></textarea>
 
-                        <button type="submit" class="cta-button">Enviar Alistamento</button>
-                    </form>
-                    </form>
-                    <div id="mensagem-alistamento" style="display:none; color:#b98c53; font-family:'Cinzel', 'IM Fell English SC', serif; margin-top:18px; font-size:1.2rem; font-weight:bold; text-align:center;">Obrigado por se alistar ao Covil!</div>
-                    <script>
-                    // Mensagem simples após envio do formulário de alistamento
-                    document.addEventListener('DOMContentLoaded', function() {
-                        var form = document.querySelector('.alistamento-form');
-                        var mensagem = document.getElementById('mensagem-alistamento');
-                        if(form && mensagem) {
-                            form.addEventListener('submit', function(e) {
-                                setTimeout(function(){
-                                    form.reset();
-                                    mensagem.style.display = 'block';
-                                    setTimeout(function(){ mensagem.style.display = 'none'; }, 4000);
-                                }, 500);
-                            });
-                        }
-                    });
-                    </script>
+                    <button type="submit" class="cta-button">Enviar Alistamento</button>
                 </form>
-            </div>
-        </section>
-    
-    
-    <!-- Script do carrossel/slider -->
-        <script src="/script.js"></script>
-
-
+            </form>
+            <div id="mensagem-alistamento"
+                style="display:none; color:#b98c53; font-family:'Cinzel', 'IM Fell English SC', serif; margin-top:18px; font-size:1.2rem; font-weight:bold; text-align:center;">
+                Obrigado por se alistar ao Covil!</div>
+            <script>
+                // Mensagem simples após envio do formulário de alistamento
+                document.addEventListener('DOMContentLoaded', function () {
+                    var form = document.querySelector('.alistamento-form');
+                    var mensagem = document.getElementById('mensagem-alistamento');
+                    if (form && mensagem) {
+                        form.addEventListener('submit', function (e) {
+                            setTimeout(function () {
+                                form.reset();
+                                mensagem.style.display = 'block';
+                                setTimeout(function () { mensagem.style.display = 'none'; }, 4000);
+                            }, 500);
+                        });
+                    }
+                });
+            </script>
+            </form>
+        </div>
+    </section>
 
     <!-- O rodapé contém informações de copyright e links secundários. -->
     <footer>
         <div class="container">
             <div class="social-links">
                 <a href="https://discord.gg/CYGMuXSRkw" target="_blank">Discord</a>
-                <a href="" target="_blank">Twitch</a>
+                <a href="" target="/p/twitch">Twitch</a>
                 <a href="" target="_blank">YouTube</a>
             </div>
-            <p class="copyright">&copy; 2025 Covil . Todos os direitos reservados. Um projeto de fã sem fins lucrativos.</p>
+            <p class="copyright">&copy; 2025 Covil . Todos os direitos reservados. Um projeto de fã sem fins lucrativos.
+            </p>
         </div>
     </footer>
-</footer>
 
+    <script src="/src/js/injectHTML.js"></script>
+    <script src="/src/js/script.js"></script>
 </body>
+
 </html>
