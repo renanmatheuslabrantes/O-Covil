@@ -161,23 +161,18 @@
 
     </main>
 
-    <section id="form-alistamento" class="form-section" style="background-image: url('assets/img/vintage-paper-bg.jpg') !important; background-color: transparent !important; background-size: cover; background-position: center; background-repeat: no-repeat; padding: 3rem 1rem;">
+    <section id="form-alistamento" class="form-section" style="background-image: url('assets/img/aeternum-map-bg.jpg') !important; background-color: transparent !important; background-size: cover; background-position: center; background-repeat: no-repeat; padding: 3rem 1rem;">
     <div class="container" style="max-width: 480px; margin: 0 auto;">
         <h2 style="text-align: center; color: #2a1508; font-family: 'Cinzel', 'IM Fell English SC', serif; font-size: 2.2rem; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(255, 255, 255, 0.6), 0 0 12px rgba(255, 255, 255, 0.4); margin-bottom: 1.5rem;">Aliste-se no Covil</h2>
-
         <form class="alistamento-form" action="https://formspree.io/f/xpwjgrjw" method="POST" style="display: flex; flex-direction: column; gap: 12px; background: rgba(255, 250, 240, 0.55); padding: 24px; border-radius: 6px;">
             <label for="nome" style="font-weight: bold; color: #2a1e10;">Nome:</label>
             <input type="text" id="nome" name="nome" required style="padding: 8px; border: 1px solid #7a6142; border-radius: 3px; background: rgba(255, 255, 255, 0.8);">
-
             <label for="discord" style="font-weight: bold; color: #2a1e10;">Nick do Discord:</label>
             <input type="text" id="discord" name="discord" placeholder="Ex: usuario#1234" required style="padding: 8px; border: 1px solid #7a6142; border-radius: 3px; background: rgba(255, 255, 255, 0.8);">
-
             <label for="email" style="font-weight: bold; color: #2a1e10;">E-mail:</label>
             <input type="email" id="email" name="email" required style="padding: 8px; border: 1px solid #7a6142; border-radius: 3px; background: rgba(255, 255, 255, 0.8);">
-
             <label for="motivo" style="font-weight: bold; color: #2a1e10;">Por que deseja se juntar ao Covil?</label>
             <textarea id="motivo" name="motivo" rows="4" required style="padding: 8px; border: 1px solid #7a6142; border-radius: 3px; background: rgba(255, 255, 255, 0.8);"></textarea>
-
             <button type="submit" class="cta-button">Enviar Alistamento</button>
         </form>
         <div id="mensagem-alistamento"
@@ -185,7 +180,6 @@
             Obrigado por se alistar ao Covil!</div>
     </div>
 </section>
-
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var form = document.querySelector('.alistamento-form');
