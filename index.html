@@ -196,21 +196,45 @@
     });
 </script>
 
-    <!-- O rodapé contém informações de copyright e links secundários. -->
-    <footer>
-        <div class="container">
-            <div class="social-links">
-                <a href="https://discord.gg/CYGMuXSRkw" target="_blank">Discord</a>
-                <a href="" target="/p/twitch">Twitch</a>
-                <a href="" target="_blank">YouTube</a>
-            </div>
-            <p class="copyright">&copy; 2027 Covil . Todos os direitos reservados. Um projeto de fã sem fins lucrativos.
-            </p>
+   <style>
+    footer {
+        background-image: url('https://cdna.artstation.com/p/assets/images/images/047/187/052/large/david-luong-wc1080-4k.jpg?1646963987');
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+    footer .footer-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+    }
+    footer .container {
+        position: relative;
+        z-index: 1;
+    }
+    footer .art-credit {
+        font-size: 0.75rem;
+        opacity: 0.8;
+    }
+    footer .art-credit a {
+        color: inherit;
+    }
+</style>
+
+<!-- O rodapé contém informações de copyright e links secundários. -->
+<footer>
+    <div class="footer-overlay"></div>
+    <div class="container">
+        <div class="social-links">
+            <a href="https://discord.gg/CYGMuXSRkw" target="_blank">Discord</a>
+            <a href="/p/twitch" target="_blank">Twitch</a>
+            <a href="" target="_blank">YouTube</a>
         </div>
-    </footer>
-
-    <script src="/src/js/injectHTML.js"></script>
-    <script src="/src/js/script.js"></script>
-</body>
-
-</html>
+        <p class="copyright">&copy; 2027 Covil . Todos os direitos reservados.</p>
+        <p class="art-credit">
+            Arte de fundo: <a href="https://www.artstation.com/artwork/wc1080" target="_blank" rel="noopener">David Luong (ArtStation)</a>
+        </p>
+    </div>
+</footer>
+<script src="/src/js/injectHTML.js"></script>
+<script src="/src/js/script.js"></script>
