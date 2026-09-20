@@ -45,7 +45,9 @@ O projeto foi construído com:
 - **HTML5**  
 - **CSS3**  
 - **JavaScript (puro)**  
-- **Firebase Cloud Firestore** para receber os alistamentos
+- **Vercel Functions** para a API
+- **Neon Postgres** para os dados
+- **Vercel Blob** para as imagens
 
 ---
 
@@ -59,17 +61,23 @@ git clone https://github.com/renanmatheuslabrantes/O-Covil.git
 
 # Acesse a pasta do projeto
 cd O-Covil
+```
 
-### Configurar o Firebase
+### Configurar a Vercel
 
-1. Crie um projeto no [console do Firebase](https://console.firebase.google.com/), adicione um app Web e ative o **Cloud Firestore**.
-2. Copie as credenciais do app para `src/js/firebase-config.js`.
-3. Publique `firestore.rules` no Firestore. A regra permite apenas novos alistamentos na coleção `alistamentos`; o cliente não pode ler, alterar ou excluir documentos.
+1. Importe o repositório no [Vercel](https://vercel.com/).
+2. Adicione uma integração Neon e execute o conteúdo de `schema.sql` no banco.
+3. Adicione uma integração Vercel Blob.
+4. Cadastre estas variáveis de ambiente no projeto:
 
-As credenciais do app Web podem ficar no frontend. A proteção dos dados é feita pelas regras do Firestore. Para um formulário público em produção, adicione também autenticação, App Check ou uma proteção anti-spam conforme a necessidade.
+  - `DATABASE_URL`: conexão do Neon.
+  - `BLOB_READ_WRITE_TOKEN`: token criado pelo Vercel Blob.
+  - `AUTH_SECRET`: uma chave aleatória longa para assinar a sessão.
+  - `ADMIN_EMAIL`: e-mail do administrador.
+  - `ADMIN_PASSWORD`: senha do administrador.
+
+Não coloque essas variáveis diretamente no código. A API usa `AUTH_SECRET` para proteger o cookie da sessão e exige autenticação para alterar notícias, carrossel e imagens.
 
 ### Painel de conteúdo
 
-1. Em **Authentication > Sign-in method**, ative o provedor **E-mail/senha** e crie o usuário administrador.
-2. Ative o **Cloud Storage** e publique `storage.rules` junto com `firestore.rules`.
-3. Acesse `admin.html` para publicar notícias e gerenciar as fotos do carrossel. O conteúdo só pode ser alterado por usuários autenticados.
+Acesse `/admin.html` no domínio da Vercel para publicar notícias e gerenciar as fotos do carrossel. O formulário público de alistamento grava na tabela `alistamentos`.

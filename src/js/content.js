@@ -1,47 +1,29 @@
-import { collection, getDocs, getFirestore, orderBy, query } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-import { firebaseConfig, isFirebaseConfigured } from "./firebase-config.js";
-
 export async function loadRemoteContent(newsContainer, carousel) {
-  if (!isFirebaseConfigured) {
-    return;
-  }
-
   try {
-    const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-    const database = getFirestore(app);
-    const [newsSnapshot, carouselSnapshot] = await Promise.all([
-      getDocs(query(collection(database, "news"), orderBy("criadoEm", "desc"))),
-      getDocs(query(collection(database, "carousel"), orderBy("criadoEm", "asc")))
-    ]);
+    const response = await fetch("/api/content");
+    if (!response.ok) return;
+    const { news, carousel: remoteCarousel } = await response.json();
 
-    if (!newsSnapshot.empty) {
-      newsContainer.replaceChildren(...newsSnapshot.docs.map((item) => createNewsCard(item.data())));
-    }
-
-    if (!carouselSnapshot.empty) {
-      carousel.replaceChildren(...carouselSnapshot.docs.map((item) => createSlide(item.data())));
-      resetCarouselIndicators(carouselSnapshot.size);
+    if (news.length) newsContainer.replaceChildren(...news.map(createNewsCard));
+    if (remoteCarousel.length) {
+      carousel.replaceChildren(...remoteCarousel.map(createSlide));
+      resetCarouselIndicators(remoteCarousel.length);
     }
   } catch (error) {
-    console.error("Falha ao carregar conteúdo do Firebase:", error);
+    console.error("Falha ao carregar conteúdo remoto:", error);
   }
 }
 
 function createNewsCard(news) {
   const article = document.createElement("article");
   article.className = "news-card";
-
   const image = document.createElement("img");
   image.src = news.capaUrl;
   image.alt = news.titulo;
-
   const content = document.createElement("div");
   content.className = "card-content";
-
   const title = document.createElement("h3");
   title.textContent = news.titulo;
-
   const summary = document.createElement("p");
   summary.textContent = news.texto;
   content.append(title, summary);
@@ -60,7 +42,6 @@ function createNewsCard(news) {
 function createSlide(slideData) {
   const slide = document.createElement("div");
   slide.className = "slide";
-
   const image = document.createElement("img");
   image.src = slideData.imagemUrl;
   image.alt = slideData.legenda || "Imagem do carrossel";
@@ -83,10 +64,7 @@ function createSlide(slideData) {
 
 function resetCarouselIndicators(amount) {
   const indicators = document.querySelector(".carousel-indicators");
-  if (!indicators) {
-    return;
-  }
-
+  if (!indicators) return;
   indicators.replaceChildren(...Array.from({ length: amount }, (_, index) => {
     const dot = document.createElement("span");
     dot.className = `dot${index === 0 ? " active" : ""}`;

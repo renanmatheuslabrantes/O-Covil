@@ -1,9 +1,3 @@
-import { addDoc, collection, deleteDoc, doc, getDocs, getFirestore, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-import { getApps, initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
-import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-storage.js";
-import { firebaseConfig, isFirebaseConfigured } from "./firebase-config.js";
-
 const loginPanel = document.getElementById("login-panel");
 const contentPanel = document.getElementById("content-panel");
 const loginForm = document.getElementById("login-form");
@@ -12,71 +6,52 @@ const message = document.getElementById("admin-message");
 const newsList = document.getElementById("news-list");
 const carouselList = document.getElementById("carousel-list");
 
-let database;
-let storage;
-let auth;
-
-if (!isFirebaseConfigured) {
-  showMessage("Configure o Firebase em src/js/firebase-config.js antes de usar o painel.", true);
-} else {
-  const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-  database = getFirestore(app);
-  storage = getStorage(app);
-  auth = getAuth(app);
-  onAuthStateChanged(auth, handleAuthChange);
-}
+checkSession();
 
 loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-  if (!auth) {
-    return;
-  }
-
-  const email = document.getElementById("login-email").value;
-  const password = document.getElementById("login-password").value;
-
+  setFormBusy(loginForm, true, "Entrando...");
   try {
-    await signInWithEmailAndPassword(auth, email, password);
+    await request("/api/admin/login", {
+      method: "POST",
+      body: JSON.stringify({
+        email: document.getElementById("login-email").value,
+        password: document.getElementById("login-password").value
+      })
+    });
     loginForm.reset();
+    showAuthenticatedArea(true);
+    await loadContentLists();
   } catch (error) {
-    console.error("Falha no login:", error);
-    showMessage("E-mail ou senha inválidos.", true);
+    showMessage(error.message || "E-mail ou senha inválidos.", true);
+  } finally {
+    setFormBusy(loginForm, false, "Entrar");
   }
 });
 
-logoutButton.addEventListener("click", () => signOut(auth));
+logoutButton.addEventListener("click", async () => {
+  await request("/api/admin/logout", { method: "POST" });
+  showAuthenticatedArea(false);
+});
 
 document.getElementById("news-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = event.currentTarget;
   const file = form.capa.files[0];
-
-  if (!validateImage(file)) {
-    return;
-  }
-
+  if (!validateImage(file)) return;
   setFormBusy(form, true, "Publicando...");
+
   try {
-    const filePath = `content/news/${createFileName(file)}`;
-    const imageRef = ref(storage, filePath);
-    await uploadBytes(imageRef, file);
-    const capaUrl = await getDownloadURL(imageRef);
-
-    await addDoc(collection(database, "news"), {
-      titulo: form.titulo.value.trim(),
-      texto: form.texto.value.trim(),
-      link: form.link.value.trim(),
-      capaUrl,
-      storagePath: filePath,
-      criadoEm: serverTimestamp()
+    const upload = await uploadImage(file);
+    await request("/api/admin/news", {
+      method: "POST",
+      body: JSON.stringify({ titulo: form.titulo.value.trim(), texto: form.texto.value.trim(), link: form.link.value.trim(), capaUrl: upload.url })
     });
-
     form.reset();
     showMessage("Notícia publicada.");
     await loadContentLists();
   } catch (error) {
-    console.error("Falha ao publicar notícia:", error);
-    showMessage("Não foi possível publicar a notícia.", true);
+    showMessage(error.message || "Não foi possível publicar a notícia.", true);
   } finally {
     setFormBusy(form, false, "Publicar notícia");
   }
@@ -86,96 +61,98 @@ document.getElementById("carousel-form").addEventListener("submit", async (event
   event.preventDefault();
   const form = event.currentTarget;
   const file = form.imagem.files[0];
-
-  if (!validateImage(file)) {
-    return;
-  }
-
+  if (!validateImage(file)) return;
   setFormBusy(form, true, "Enviando...");
+
   try {
-    const filePath = `content/carousel/${createFileName(file)}`;
-    const imageRef = ref(storage, filePath);
-    await uploadBytes(imageRef, file);
-    const imagemUrl = await getDownloadURL(imageRef);
-
-    await addDoc(collection(database, "carousel"), {
-      legenda: form.legenda.value.trim(),
-      link: form.link.value.trim(),
-      imagemUrl,
-      storagePath: filePath,
-      criadoEm: serverTimestamp()
+    const upload = await uploadImage(file);
+    await request("/api/admin/carousel", {
+      method: "POST",
+      body: JSON.stringify({ legenda: form.legenda.value.trim(), link: form.link.value.trim(), imagemUrl: upload.url })
     });
-
     form.reset();
     showMessage("Foto adicionada ao carrossel.");
     await loadContentLists();
   } catch (error) {
-    console.error("Falha ao adicionar foto:", error);
-    showMessage("Não foi possível adicionar a foto.", true);
+    showMessage(error.message || "Não foi possível adicionar a foto.", true);
   } finally {
     setFormBusy(form, false, "Adicionar ao carrossel");
   }
 });
 
-function handleAuthChange(user) {
-  const authenticated = Boolean(user);
-  loginPanel.hidden = authenticated;
-  contentPanel.hidden = !authenticated;
-  logoutButton.hidden = !authenticated;
-
-  if (authenticated) {
-    loadContentLists();
+async function checkSession() {
+  try {
+    await request("/api/admin/session");
+    showAuthenticatedArea(true);
+    await loadContentLists();
+  } catch {
+    showAuthenticatedArea(false);
   }
 }
 
-async function loadContentLists() {
-  const [newsSnapshot, carouselSnapshot] = await Promise.all([
-    getDocs(query(collection(database, "news"), orderBy("criadoEm", "desc"))),
-    getDocs(query(collection(database, "carousel"), orderBy("criadoEm", "asc")))
-  ]);
-
-  newsList.replaceChildren(...newsSnapshot.docs.map((item) => createListItem(item.id, item.data(), "news")));
-  carouselList.replaceChildren(...carouselSnapshot.docs.map((item) => createListItem(item.id, item.data(), "carousel")));
+function showAuthenticatedArea(authenticated) {
+  loginPanel.hidden = authenticated;
+  contentPanel.hidden = !authenticated;
+  logoutButton.hidden = !authenticated;
 }
 
-function createListItem(id, data, type) {
+async function loadContentLists() {
+  const [news, carousel] = await Promise.all([request("/api/admin/news"), request("/api/admin/carousel")]);
+  newsList.replaceChildren(...news.map((item) => createListItem(item, "news")));
+  carouselList.replaceChildren(...carousel.map((item) => createListItem(item, "carousel")));
+}
+
+function createListItem(data, type) {
   const item = document.createElement("article");
   item.className = "admin-list-item";
-
   const image = document.createElement("img");
   image.src = type === "news" ? data.capaUrl : data.imagemUrl;
   image.alt = type === "news" ? data.titulo : data.legenda || "Foto do carrossel";
-
   const title = document.createElement("strong");
   title.textContent = type === "news" ? data.titulo : data.legenda || "Sem legenda";
-
   const removeButton = document.createElement("button");
   removeButton.className = "admin-remove-button";
   removeButton.type = "button";
   removeButton.textContent = "Remover";
-  removeButton.addEventListener("click", () => removeContent(id, data, type));
-
+  removeButton.addEventListener("click", () => removeContent(data.id, type));
   item.append(image, title, removeButton);
   return item;
 }
 
-async function removeContent(id, data, type) {
+async function removeContent(id, type) {
   const label = type === "news" ? "notícia" : "foto";
-  if (!window.confirm(`Remover esta ${label}?`)) {
-    return;
-  }
-
+  if (!window.confirm(`Remover esta ${label}?`)) return;
   try {
-    await deleteDoc(doc(database, type, id));
-    if (data.storagePath) {
-      await deleteObject(ref(storage, data.storagePath));
-    }
+    await request(`/api/admin/${type}?id=${encodeURIComponent(id)}`, { method: "DELETE" });
     showMessage(`${label[0].toUpperCase()}${label.slice(1)} removida.`);
     await loadContentLists();
   } catch (error) {
-    console.error(`Falha ao remover ${label}:`, error);
-    showMessage(`Não foi possível remover a ${label}.`, true);
+    showMessage(error.message || `Não foi possível remover a ${label}.`, true);
   }
+}
+
+async function uploadImage(file) {
+  return request("/api/admin/upload", {
+    method: "POST",
+    body: JSON.stringify({ fileName: file.name, contentType: file.type, data: await toBase64(file) })
+  });
+}
+
+function request(url, options = {}) {
+  return fetch(url, { ...options, headers: { "Content-Type": "application/json", ...(options.headers || {}) } }).then(async (response) => {
+    const data = response.status === 204 ? null : await response.json();
+    if (!response.ok) throw new Error(data?.error || "Ocorreu um erro inesperado.");
+    return data;
+  });
+}
+
+function toBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(",")[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
 
 function validateImage(file) {
@@ -183,16 +160,11 @@ function validateImage(file) {
     showMessage("Escolha um arquivo de imagem.", true);
     return false;
   }
-  if (file.size >= 5 * 1024 * 1024) {
-    showMessage("A imagem deve ter menos de 5 MB.", true);
+  if (file.size > 3 * 1024 * 1024) {
+    showMessage("A imagem deve ter no máximo 3 MB.", true);
     return false;
   }
   return true;
-}
-
-function createFileName(file) {
-  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "-");
-  return `${Date.now()}-${safeName}`;
 }
 
 function setFormBusy(form, busy, text) {

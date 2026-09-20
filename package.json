@@ -1,0 +1,12 @@
+{
+  "name": "o-covil",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check src/js/admin.js && node --check src/js/content.js && node --check src/js/alistamento.js"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
+    "@vercel/blob": "^2.0.0"
+  }
+}
