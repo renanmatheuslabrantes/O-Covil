@@ -45,6 +45,7 @@ O projeto foi construído com:
 - **HTML5**  
 - **CSS3**  
 - **JavaScript (puro)**  
+- **Firebase Cloud Firestore** para receber os alistamentos
 
 ---
 
@@ -58,3 +59,17 @@ git clone https://github.com/renanmatheuslabrantes/O-Covil.git
 
 # Acesse a pasta do projeto
 cd O-Covil
+
+### Configurar o Firebase
+
+1. Crie um projeto no [console do Firebase](https://console.firebase.google.com/), adicione um app Web e ative o **Cloud Firestore**.
+2. Copie as credenciais do app para `src/js/firebase-config.js`.
+3. Publique `firestore.rules` no Firestore. A regra permite apenas novos alistamentos na coleção `alistamentos`; o cliente não pode ler, alterar ou excluir documentos.
+
+As credenciais do app Web podem ficar no frontend. A proteção dos dados é feita pelas regras do Firestore. Para um formulário público em produção, adicione também autenticação, App Check ou uma proteção anti-spam conforme a necessidade.
+
+### Painel de conteúdo
+
+1. Em **Authentication > Sign-in method**, ative o provedor **E-mail/senha** e crie o usuário administrador.
+2. Ative o **Cloud Storage** e publique `storage.rules` junto com `firestore.rules`.
+3. Acesse `admin.html` para publicar notícias e gerenciar as fotos do carrossel. O conteúdo só pode ser alterado por usuários autenticados.

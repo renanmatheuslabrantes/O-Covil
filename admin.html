@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Covil</title>
+    <link rel="icon" type="image/jpeg" href="images/nwdb-logo.jpeg">
+    <link rel="stylesheet" href="/src/css/style.css">
+</head>
+<body class="admin-page">
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">O Covil</a>
+            <button id="logout-button" class="cta-button admin-logout" type="button" hidden>Sair</button>
+        </div>
+    </header>
+
+    <main class="admin-main container">
+        <section id="login-panel" class="admin-panel">
+            <h1>Painel do Covil</h1>
+            <p>Entre para gerenciar as novidades e o carrossel.</p>
+            <form id="login-form" class="admin-form">
+                <label for="login-email">E-mail</label>
+                <input id="login-email" type="email" autocomplete="email" required>
+                <label for="login-password">Senha</label>
+                <input id="login-password" type="password" autocomplete="current-password" required>
+                <button class="cta-button" type="submit">Entrar</button>
+            </form>
+        </section>
+
+        <section id="content-panel" hidden>
+            <div id="admin-message" class="admin-message" role="status"></div>
+
+            <div class="admin-grid">
+                <section class="admin-panel">
+                    <h2>Nova notícia</h2>
+                    <form id="news-form" class="admin-form">
+                        <label for="news-title">Título</label>
+                        <input id="news-title" name="titulo" maxlength="120" required>
+                        <label for="news-text">Texto</label>
+                        <textarea id="news-text" name="texto" rows="6" maxlength="2000" required></textarea>
+                        <label for="news-link">Link dos detalhes (opcional)</label>
+                        <input id="news-link" name="link" type="url" placeholder="https://...">
+                        <label for="news-cover">Imagem de capa</label>
+                        <input id="news-cover" name="capa" type="file" accept="image/*" required>
+                        <button class="cta-button" type="submit">Publicar notícia</button>
+                    </form>
+                </section>
+
+                <section class="admin-panel">
+                    <h2>Nova foto no carrossel</h2>
+                    <form id="carousel-form" class="admin-form">
+                        <label for="carousel-caption">Legenda (opcional)</label>
+                        <input id="carousel-caption" name="legenda" maxlength="160">
+                        <label for="carousel-link">Link ao clicar (opcional)</label>
+                        <input id="carousel-link" name="link" type="url" placeholder="https://...">
+                        <label for="carousel-image">Imagem</label>
+                        <input id="carousel-image" name="imagem" type="file" accept="image/*" required>
+                        <button class="cta-button" type="submit">Adicionar ao carrossel</button>
+                    </form>
+                </section>
+            </div>
+
+            <section class="admin-panel admin-list-panel">
+                <h2>Notícias publicadas</h2>
+                <div id="news-list" class="admin-list"></div>
+            </section>
+
+            <section class="admin-panel admin-list-panel">
+                <h2>Fotos do carrossel</h2>
+                <div id="carousel-list" class="admin-list"></div>
+            </section>
+        </section>
+    </main>
+
+    <script type="module" src="/src/js/admin.js"></script>
+</body>
+</html>

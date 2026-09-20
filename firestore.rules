@@ -1,0 +1,36 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /alistamentos/{applicationId} {
+      allow create: if request.resource.data.keys().hasOnly([
+        'nome', 'discord', 'email', 'motivo', 'criadoEm'
+      ])
+      && request.resource.data.nome is string
+      && request.resource.data.nome.size() >= 2
+      && request.resource.data.nome.size() <= 80
+      && request.resource.data.discord is string
+      && request.resource.data.discord.size() >= 2
+      && request.resource.data.discord.size() <= 80
+      && request.resource.data.email is string
+      && request.resource.data.email.size() >= 5
+      && request.resource.data.email.size() <= 160
+      && request.resource.data.motivo is string
+      && request.resource.data.motivo.size() >= 10
+      && request.resource.data.motivo.size() <= 2000
+      && request.resource.data.criadoEm is timestamp;
+
+      allow read, update, delete: if false;
+    }
+
+    match /news/{newsId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
+    }
+
+    match /carousel/{carouselId} {
+      allow read: if true;
+      allow create, update, delete: if request.auth != null;
+    }
+  }
+}

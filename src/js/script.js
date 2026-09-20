@@ -1,4 +1,6 @@
 
+import { loadRemoteContent } from "./content.js";
+
 document.addEventListener('DOMContentLoaded', async () => {
   const carousel = document.getElementById("carousel")
   const newsContainer = document.getElementById("news-container")
@@ -21,6 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   ]
 
   await Promise.all(newsFetch.map(async (slide) => await injectHTML(slide.path, slide.target, slide.options)))
+  await loadRemoteContent(newsContainer, carousel)
 
 
   const slides = document.querySelectorAll(".slide");

@@ -165,7 +165,7 @@
     <section id="form-alistamento" class="form-section" style="background-image: url('https://cdnb.artstation.com/p/assets/images/images/093/501/087/4k/charles-bradbury-artblast-map-hirez.webp?1762727244') !important; background-color: transparent !important; background-size: cover; background-position: center; background-repeat: no-repeat; padding: 3rem 1rem;">
     <div class="container" style="max-width: 480px; margin: 0 auto;">
         <h2 style="text-align: center; color: #2a1508; font-family: 'Cinzel', 'IM Fell English SC', serif; font-size: 2.2rem; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(255, 255, 255, 0.6), 0 0 12px rgba(255, 255, 255, 0.4); margin-bottom: 1.5rem;">Aliste-se no Covil</h2>
-        <form class="alistamento-form" action="https://formspree.io/f/xpwjgrjw" method="POST" style="display: flex; flex-direction: column; gap: 12px; background: rgba(255, 250, 240, 0.55); padding: 24px; border-radius: 6px;">
+        <form class="alistamento-form" style="display: flex; flex-direction: column; gap: 12px; background: rgba(255, 250, 240, 0.55); padding: 24px; border-radius: 6px;">
             <label for="nome" style="font-weight: bold; color: #2a1e10;">Nome:</label>
             <input type="text" id="nome" name="nome" required style="padding: 8px; border: 1px solid #7a6142; border-radius: 3px; background: rgba(255, 255, 255, 0.8);">
             <label for="discord" style="font-weight: bold; color: #2a1e10;">Nick do Discord:</label>
@@ -181,22 +181,6 @@
             Obrigado por se alistar ao Covil!</div>
     </div>
 </section>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var form = document.querySelector('.alistamento-form');
-        var mensagem = document.getElementById('mensagem-alistamento');
-        if (form && mensagem) {
-            form.addEventListener('submit', function (e) {
-                setTimeout(function () {
-                    form.reset();
-                    mensagem.style.display = 'block';
-                    setTimeout(function () { mensagem.style.display = 'none'; }, 4000);
-                }, 500);
-            });
-        }
-    });
-</script>
-
    <style>
     footer {
         background-image: url('https://cdnb.artstation.com/p/assets/images/images/047/187/047/large/david-luong-wc1140.jpg?1646962796');
@@ -237,4 +221,5 @@
     </div>
 </footer>
 <script src="/src/js/injectHTML.js"></script>
-<script src="/src/js/script.js"></script>
+<script type="module" src="/src/js/script.js"></script>
+<script type="module" src="/src/js/alistamento.js"></script>
