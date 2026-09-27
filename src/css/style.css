@@ -816,12 +816,21 @@ footer {
 /* --- Painel administrativo --- */
 .admin-page {
     min-height: 100vh;
-    background: var(--cor-fundo-escuro);
+    background-image: linear-gradient(rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0.72)), url("/images/DnD-WoW.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
 }
 
 .admin-main {
     padding-top: 4rem;
     padding-bottom: 5rem;
+}
+
+#login-panel {
+    max-width: 440px;
+    margin: 2rem auto 0;
 }
 
 .admin-panel {
