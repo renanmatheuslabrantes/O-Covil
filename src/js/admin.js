@@ -15,7 +15,7 @@ loginForm.addEventListener("submit", async (event) => {
     await request("/api/admin/login", {
       method: "POST",
       body: JSON.stringify({
-        email: document.getElementById("login-email").value,
+        login: document.getElementById("login-username").value,
         password: document.getElementById("login-password").value
       })
     });
@@ -23,7 +23,7 @@ loginForm.addEventListener("submit", async (event) => {
     showAuthenticatedArea(true);
     await loadContentLists();
   } catch (error) {
-    showMessage(error.message || "E-mail ou senha inválidos.", true);
+    showMessage(error.message || "Login ou senha inválidos.", true);
   } finally {
     setFormBusy(loginForm, false, "Entrar");
   }

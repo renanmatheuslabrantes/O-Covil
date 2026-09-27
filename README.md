@@ -73,7 +73,7 @@ cd O-Covil
   - `DATABASE_URL`: conexão do Neon.
   - `BLOB_READ_WRITE_TOKEN`: token criado pelo Vercel Blob.
   - `AUTH_SECRET`: uma chave aleatória longa para assinar a sessão.
-  - `ADMIN_EMAIL`: e-mail do administrador.
+  - `ADMIN_USERNAME`: login do administrador (ou `ADMIN_EMAIL` para compatibilidade com configurações existentes).
   - `ADMIN_PASSWORD`: senha do administrador.
 
 Não coloque essas variáveis diretamente no código. A API usa `AUTH_SECRET` para proteger o cookie da sessão e exige autenticação para alterar notícias, carrossel e imagens.
