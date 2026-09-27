@@ -1,6 +1,6 @@
 <!-- Banner ou Logo -->
 <p align="center">
-  <img src="https://i.pinimg.com/736x/da/7f/a0/da7fa0be85d9bd53ab119eff5c6f4229.jpg">
+  <img src="https://i.pinimg.com/1200x/ed/75/eb/ed75ebb5bbb5bb7350e5d52568e6916a.jpg">
 </p>
 
 # 🐺 O-Covil
