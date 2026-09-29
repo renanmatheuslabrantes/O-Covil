@@ -5,6 +5,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Método não permitido." });
   }
 
+  res.setHeader("Cache-Control", "no-store");
+
   try {
     const [news, carousel] = await Promise.all([
       sql`select id, titulo, texto, link, capa_url, criado_em from news order by criado_em desc`,

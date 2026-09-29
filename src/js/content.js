@@ -1,13 +1,17 @@
 export async function loadRemoteContent(newsContainer, carousel) {
   try {
-    const response = await fetch("/api/content");
+    const response = await fetch("/api/content", { cache: "no-store" });
     if (!response.ok) return;
-    const { news, carousel: remoteCarousel } = await response.json();
+    const { news = [], carousel: remoteCarousel = [] } = await response.json();
 
-    if (news.length) newsContainer.replaceChildren(...news.map(createNewsCard));
+    // Notícias do painel entram no topo de "Nossas Novidades" (mais recentes primeiro),
+    // sem apagar as notícias fixas do site.
+    if (news.length) newsContainer.prepend(...news.map(createNewsCard));
+
+    // Fotos do painel entram depois dos slides fixos, mantendo os botões ‹ › do carrossel.
     if (remoteCarousel.length) {
-      carousel.replaceChildren(...remoteCarousel.map(createSlide));
-      resetCarouselIndicators(remoteCarousel.length);
+      carousel.append(...remoteCarousel.map(createSlide));
+      syncCarouselIndicators(carousel);
     }
   } catch (error) {
     console.error("Falha ao carregar conteúdo remoto:", error);
@@ -62,10 +66,11 @@ function createSlide(slideData) {
   return slide;
 }
 
-function resetCarouselIndicators(amount) {
+function syncCarouselIndicators(carousel) {
   const indicators = document.querySelector(".carousel-indicators");
   if (!indicators) return;
-  indicators.replaceChildren(...Array.from({ length: amount }, (_, index) => {
+  const total = carousel.querySelectorAll(".slide").length;
+  indicators.replaceChildren(...Array.from({ length: total }, (_, index) => {
     const dot = document.createElement("span");
     dot.className = `dot${index === 0 ? " active" : ""}`;
     dot.dataset.slide = index;

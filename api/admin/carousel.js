@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     }
     if (req.method === "POST") {
       const { legenda, link, imagemUrl } = req.body || {};
-      if (!isValidText(imagemUrl, 1, 2048)) {
+      if (!isValidText(imagemUrl, 1, 2048) || !isValidOptionalUrl(link)) {
         return res.status(400).json({ error: "Imagem do carrossel inválida." });
       }
       const [item] = await sql`insert into carousel (legenda, link, imagem_url) values (${legenda?.trim() || ""}, ${link?.trim() || ""}, ${imagemUrl}) returning id, legenda, link, imagem_url`;
@@ -22,8 +22,11 @@ export default async function handler(req, res) {
     }
     if (req.method === "DELETE") {
       const id = Number(req.query.id);
+      if (!Number.isInteger(id)) {
+        return res.status(400).json({ error: "Identificador inválido." });
+      }
       const [item] = await sql`delete from carousel where id = ${id} returning imagem_url`;
-      if (item?.imagem_url) await del(item.imagem_url);
+      if (item?.imagem_url) await del(item.imagem_url).catch((error) => console.error("Falha ao apagar imagem do Blob:", error));
       return res.status(204).end();
     }
     return res.status(405).json({ error: "Método não permitido." });
@@ -35,4 +38,14 @@ export default async function handler(req, res) {
 
 function isValidText(value, minimum, maximum) {
   return typeof value === "string" && value.trim().length >= minimum && value.trim().length <= maximum;
+}
+
+function isValidOptionalUrl(value) {
+  if (value === undefined || value === null || value === "") return true;
+  if (typeof value !== "string" || value.length > 2048) return false;
+  try {
+    return ["http:", "https:"].includes(new URL(value.trim()).protocol);
+  } catch {
+    return false;
+  }
 }

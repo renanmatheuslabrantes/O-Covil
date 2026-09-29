@@ -19,14 +19,16 @@ loginForm.addEventListener("submit", async (event) => {
         password: document.getElementById("login-password").value
       })
     });
-    loginForm.reset();
-    showAuthenticatedArea(true);
-    await loadContentLists();
   } catch (error) {
     showMessage(error.message || "Login ou senha inválidos.", true);
-  } finally {
     setFormBusy(loginForm, false, "Entrar");
+    return;
   }
+
+  loginForm.reset();
+  setFormBusy(loginForm, false, "Entrar");
+  showAuthenticatedArea(true);
+  await loadContentLists();
 });
 
 logoutButton.addEventListener("click", async () => {
@@ -83,11 +85,12 @@ document.getElementById("carousel-form").addEventListener("submit", async (event
 async function checkSession() {
   try {
     await request("/api/admin/session");
-    showAuthenticatedArea(true);
-    await loadContentLists();
   } catch {
     showAuthenticatedArea(false);
+    return;
   }
+  showAuthenticatedArea(true);
+  await loadContentLists();
 }
 
 function showAuthenticatedArea(authenticated) {
@@ -97,9 +100,13 @@ function showAuthenticatedArea(authenticated) {
 }
 
 async function loadContentLists() {
-  const [news, carousel] = await Promise.all([request("/api/admin/news"), request("/api/admin/carousel")]);
-  newsList.replaceChildren(...news.map((item) => createListItem(item, "news")));
-  carouselList.replaceChildren(...carousel.map((item) => createListItem(item, "carousel")));
+  try {
+    const [news, carousel] = await Promise.all([request("/api/admin/news"), request("/api/admin/carousel")]);
+    newsList.replaceChildren(...news.map((item) => createListItem(item, "news")));
+    carouselList.replaceChildren(...carousel.map((item) => createListItem(item, "carousel")));
+  } catch (error) {
+    showMessage(error.message || "Não foi possível carregar as listas.", true);
+  }
 }
 
 function createListItem(data, type) {
