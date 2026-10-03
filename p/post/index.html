@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Publicação | O Covil</title>
+    <link rel="icon" type="image/jpeg" href="/images/Logo.jpeg">
+    <link rel="stylesheet" href="/src/css/style.css">
+</head>
+<body>
+    <header>
+        <div class="container header-container">
+            <a href="/" class="logo">O Covil</a>
+        </div>
+    </header>
+    <main class="container">
+        <article class="post-detail">
+            <a class="post-back-link" href="/#noticias">&larr; Voltar às novidades</a>
+            <p id="post-status" class="post-status" role="status">Carregando publicação...</p>
+            <div id="post-content" hidden>
+                <h1 id="post-title"></h1>
+                <time id="post-date"></time>
+                <img id="post-image" alt="">
+                <div id="post-body" class="post-detail-content"></div>
+            </div>
+        </article>
+    </main>
+    <script type="module" src="/src/js/post.js"></script>
+</body>
+</html>

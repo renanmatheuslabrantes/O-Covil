@@ -30,6 +30,10 @@ export async function loadRemoteContent(newsContainer, carousel) {
 function createPostCard(post) {
   const article = document.createElement("article");
   article.className = "news-card";
+  const link = document.createElement("a");
+  link.className = "news-card-link";
+  link.href = `/p/post/?id=${encodeURIComponent(post.id)}`;
+  link.setAttribute("aria-label", `Ler publicação: ${post.titulo}`);
   const image = document.createElement("img");
   image.src = post.imagemUrl;
   image.alt = post.titulo;
@@ -39,8 +43,12 @@ function createPostCard(post) {
   title.textContent = post.titulo;
   const body = document.createElement("p");
   body.textContent = post.conteudo;
-  content.append(title, body);
-  article.append(image, content);
+  const readMore = document.createElement("span");
+  readMore.className = "card-read-more";
+  readMore.textContent = "Ler publicação →";
+  content.append(title, body, readMore);
+  link.append(image, content);
+  article.append(link);
   return article;
 }
 
