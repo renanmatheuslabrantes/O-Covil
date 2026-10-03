@@ -32,6 +32,19 @@
 
             <div class="admin-grid">
                 <section class="admin-panel">
+                    <h2>Novo post</h2>
+                    <form id="post-form" class="admin-form">
+                        <label for="post-title">Título</label>
+                        <input id="post-title" name="titulo" maxlength="120" required>
+                        <label for="post-content">Conteúdo</label>
+                        <textarea id="post-content" name="conteudo" rows="6" maxlength="5000" required></textarea>
+                        <label for="post-image">Imagem (JPG, PNG ou WebP; até 5 MB)</label>
+                        <input id="post-image" name="imagem" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required>
+                        <button class="cta-button" type="submit">Publicar post</button>
+                    </form>
+                </section>
+
+                <section class="admin-panel">
                     <h2>Nova notícia</h2>
                     <form id="news-form" class="admin-form">
                         <label for="news-title">Título</label>
@@ -40,8 +53,8 @@
                         <textarea id="news-text" name="texto" rows="6" maxlength="2000" required></textarea>
                         <label for="news-link">Link dos detalhes (opcional)</label>
                         <input id="news-link" name="link" type="url" placeholder="https://...">
-                        <label for="news-cover">Imagem de capa (até 3 MB)</label>
-                        <input id="news-cover" name="capa" type="file" accept="image/*" required>
+                        <label for="news-cover">Imagem de capa (JPG, PNG ou WebP; até 5 MB)</label>
+                        <input id="news-cover" name="capa" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required>
                         <button class="cta-button" type="submit">Publicar notícia</button>
                     </form>
                 </section>
@@ -53,12 +66,17 @@
                         <input id="carousel-caption" name="legenda" maxlength="160">
                         <label for="carousel-link">Link ao clicar (opcional)</label>
                         <input id="carousel-link" name="link" type="url" placeholder="https://...">
-                        <label for="carousel-image">Imagem (até 3 MB)</label>
-                        <input id="carousel-image" name="imagem" type="file" accept="image/*" required>
+                        <label for="carousel-image">Imagem (JPG, PNG ou WebP; até 5 MB)</label>
+                        <input id="carousel-image" name="imagem" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required>
                         <button class="cta-button" type="submit">Adicionar ao carrossel</button>
                     </form>
                 </section>
             </div>
+
+            <section class="admin-panel admin-list-panel">
+                <h2>Posts publicados</h2>
+                <div id="posts-list" class="admin-list"></div>
+            </section>
 
             <section class="admin-panel admin-list-panel">
                 <h2>Notícias publicadas</h2>

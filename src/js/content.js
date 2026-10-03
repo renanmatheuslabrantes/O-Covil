@@ -16,6 +16,32 @@ export async function loadRemoteContent(newsContainer, carousel) {
   } catch (error) {
     console.error("Falha ao carregar conteúdo remoto:", error);
   }
+
+  try {
+    const response = await fetch("/api/posts", { cache: "no-store" });
+    if (!response.ok) return;
+    const posts = await response.json();
+    if (posts.length) newsContainer.prepend(...posts.map(createPostCard));
+  } catch (error) {
+    console.error("Falha ao carregar publicações:", error);
+  }
+}
+
+function createPostCard(post) {
+  const article = document.createElement("article");
+  article.className = "news-card";
+  const image = document.createElement("img");
+  image.src = post.imagemUrl;
+  image.alt = post.titulo;
+  const content = document.createElement("div");
+  content.className = "card-content";
+  const title = document.createElement("h3");
+  title.textContent = post.titulo;
+  const body = document.createElement("p");
+  body.textContent = post.conteudo;
+  content.append(title, body);
+  article.append(image, content);
+  return article;
 }
 
 function createNewsCard(news) {
