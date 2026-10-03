@@ -14,12 +14,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   await Promise.all(slidesFetch.map(async (slide) => await injectHTML(slide.path, slide.target, slide.options)))
 
   const newsFetch = [
-    { path: "/src/injectables/articles/nighthaven.html", target: newsContainer, options: { position: 1 } },
-    { path: "/src/injectables/articles/steam-nighthaven.html", target: newsContainer, options: { position: 2 } },
-    { path: "/src/injectables/articles/nwdb.html", target: newsContainer, options: { position: 3 } },
-    { path: "/src/injectables/articles/amigavel-iniciantes.html", target: newsContainer, options: { position: 4 } },
-    { path: "/src/injectables/articles/raids.html", target: newsContainer, options: { position: 5 } },
-    { path: "/src/injectables/articles/twitch.html", target: newsContainer, options: { position: 6 } },
+    { path: "/src/injectables/articles/amigavel-iniciantes.html", target: newsContainer, options: { position: 1 } },
+    { path: "/src/injectables/articles/raids.html", target: newsContainer, options: { position: 2 } },
   ]
 
   await Promise.all(newsFetch.map(async (slide) => await injectHTML(slide.path, slide.target, slide.options)))
