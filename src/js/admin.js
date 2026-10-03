@@ -8,6 +8,30 @@ const message = document.getElementById("admin-message");
 const newsList = document.getElementById("news-list");
 const carouselList = document.getElementById("carousel-list");
 const postsList = document.getElementById("posts-list");
+const postEditor = document.getElementById("post-content");
+const postEditorToolbar = document.getElementById("post-editor-toolbar");
+const postContentValue = document.getElementById("post-content-value");
+const postContentCount = document.getElementById("post-content-count");
+
+postEditorToolbar.addEventListener("mousedown", (event) => {
+  if (event.target.closest("button")) event.preventDefault();
+});
+
+postEditorToolbar.addEventListener("click", (event) => {
+  const button = event.target.closest("button");
+  if (!button) return;
+
+  if (button.dataset.editorLink !== undefined) {
+    insertPostLink();
+    return;
+  }
+
+  postEditor.focus();
+  document.execCommand(button.dataset.editorCommand, false);
+  updatePostContentCount();
+});
+
+postEditor.addEventListener("input", updatePostContentCount);
 
 checkSession();
 
@@ -43,6 +67,7 @@ document.getElementById("post-form").addEventListener("submit", async (event) =>
   event.preventDefault();
   const form = event.currentTarget;
   const file = form.imagem.files[0];
+  if (!syncPostContent()) return;
   if (!validateImage(file)) return;
   setFormBusy(form, true, "Enviando imagem...");
 
@@ -54,6 +79,8 @@ document.getElementById("post-form").addEventListener("submit", async (event) =>
       body: JSON.stringify({ titulo: form.titulo.value.trim(), conteudo: form.conteudo.value.trim(), imagemUrl: image.url })
     });
     form.reset();
+    postEditor.replaceChildren();
+    updatePostContentCount();
     showMessage("Post publicado.");
     await loadPosts();
   } catch (error) {
@@ -223,4 +250,43 @@ function setFormBusy(form, busy, text) {
 function showMessage(text, isError = false) {
   message.textContent = text;
   message.className = `admin-message${isError ? " is-error" : ""}`;
+}
+
+function updatePostContentCount() {
+  const length = postEditor.innerText.replace(/\u00a0/g, " ").trim().length;
+  postContentCount.textContent = `${length} / 5000`;
+  postContentCount.classList.toggle("is-over-limit", length > 5000);
+}
+
+function syncPostContent() {
+  const text = postEditor.innerText.replace(/\u00a0/g, " ").trim();
+  if (!text || text.length > 5000) {
+    showMessage(text ? "O conteúdo deve ter no máximo 5000 caracteres." : "Escreva o conteúdo da publicação.", true);
+    postEditor.focus();
+    return false;
+  }
+
+  postContentValue.value = postEditor.innerHTML;
+  return true;
+}
+
+function insertPostLink() {
+  const value = window.prompt("Digite o endereço do link:");
+  if (!value) return;
+
+  let url;
+  try {
+    url = new URL(value.trim());
+  } catch {
+    showMessage("Informe um link válido começando com https://, http:// ou mailto:.", true);
+    return;
+  }
+
+  if (!["https:", "http:", "mailto:"].includes(url.protocol)) {
+    showMessage("Links devem usar https://, http:// ou mailto:.", true);
+    return;
+  }
+
+  postEditor.focus();
+  document.execCommand("createLink", false, url.href);
 }

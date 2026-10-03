@@ -26,7 +26,12 @@ async function loadPost(id) {
     time.dateTime = date.toISOString();
     time.textContent = new Intl.DateTimeFormat("pt-BR", { dateStyle: "long", timeStyle: "short" }).format(date);
 
-    document.getElementById("post-body").textContent = post.conteudo;
+    const body = document.getElementById("post-body");
+    if (post.conteudoHtml) {
+      body.innerHTML = post.conteudoHtml;
+    } else {
+      body.textContent = post.conteudo;
+    }
     status.hidden = true;
     content.hidden = false;
   } catch {

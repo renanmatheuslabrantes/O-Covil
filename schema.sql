@@ -10,7 +10,7 @@ create table if not exists news (
 create table if not exists posts (
   id bigserial primary key,
   titulo varchar(120) not null,
-  conteudo varchar(5000) not null,
+  conteudo text not null,
   imagem_url text not null,
   criado_em timestamptz not null default now()
 );

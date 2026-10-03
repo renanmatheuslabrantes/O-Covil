@@ -83,7 +83,7 @@ As notícias deixam de aparecer após 30 dias e são removidas diariamente junto
 
 ### Posts com imagem
 
-O site continua em HTML e JavaScript puro. O formulário de posts fica em `admin.html`; as funções estão em `api/admin/posts.js` (criação e gerenciamento), `api/admin/upload.js` (token de upload) e `api/posts.js` (leitura pública). Cada card abre uma página de detalhe própria em `/p/post/?id=...`. O navegador envia a imagem diretamente ao Vercel Blob com um token temporário, e o Postgres guarda somente a URL.
+O site continua em HTML e JavaScript puro. O formulário de posts fica em `admin.html`, com edição de texto formatado; as funções estão em `api/admin/posts.js` (criação e gerenciamento), `api/admin/upload.js` (token de upload) e `api/posts.js` (leitura pública). Cada card abre uma página de detalhe própria em `/p/post/?id=...`. O navegador envia a imagem diretamente ao Vercel Blob com um token temporário, e o Postgres guarda a URL e o conteúdo sanitizado.
 
 Estrutura relacionada:
 

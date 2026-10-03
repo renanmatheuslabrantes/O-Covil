@@ -1,4 +1,5 @@
 import { sql } from "./_lib/db.js";
+import { toPublicPost } from "./_lib/post-content.js";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -19,23 +20,11 @@ export default async function handler(req, res) {
         return res.status(404).json({ error: "Publicação não encontrada." });
       }
 
-      return res.status(200).json({
-        id: post.id,
-        titulo: post.titulo,
-        conteudo: post.conteudo,
-        imagemUrl: post.imagem_url,
-        criadoEm: post.criado_em
-      });
+      return res.status(200).json(toPublicPost(post));
     }
 
     const posts = await sql`select id, titulo, conteudo, imagem_url, criado_em from posts order by criado_em desc`;
-    return res.status(200).json(posts.map((post) => ({
-      id: post.id,
-      titulo: post.titulo,
-      conteudo: post.conteudo,
-      imagemUrl: post.imagem_url,
-      criadoEm: post.criado_em
-    })));
+    return res.status(200).json(posts.map(toPublicPost));
   } catch (error) {
     console.error("Falha ao carregar posts:", error);
     return res.status(500).json({ error: "Não foi possível carregar as publicações." });

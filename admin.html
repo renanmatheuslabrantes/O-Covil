@@ -36,8 +36,18 @@
                     <form id="post-form" class="admin-form">
                         <label for="post-title">Título</label>
                         <input id="post-title" name="titulo" maxlength="120" required>
-                        <label for="post-content">Conteúdo</label>
-                        <textarea id="post-content" name="conteudo" rows="6" maxlength="5000" required></textarea>
+                        <label id="post-content-label">Conteúdo</label>
+                        <div id="post-editor-toolbar" class="rich-text-toolbar" role="toolbar" aria-label="Formatação do conteúdo">
+                            <button type="button" data-editor-command="bold" aria-label="Negrito" title="Negrito"><strong>B</strong></button>
+                            <button type="button" data-editor-command="italic" aria-label="Itálico" title="Itálico"><em>I</em></button>
+                            <button type="button" data-editor-command="underline" aria-label="Sublinhado" title="Sublinhado"><u>U</u></button>
+                            <button type="button" data-editor-command="insertUnorderedList" aria-label="Lista com marcadores" title="Lista com marcadores">Lista</button>
+                            <button type="button" data-editor-command="insertOrderedList" aria-label="Lista numerada" title="Lista numerada">1. Lista</button>
+                            <button type="button" data-editor-link aria-label="Inserir link" title="Inserir link">Link</button>
+                        </div>
+                        <div id="post-content" class="rich-text-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-required="true" aria-labelledby="post-content-label" data-placeholder="Escreva o conteúdo da publicação..."></div>
+                        <input id="post-content-value" type="hidden" name="conteudo">
+                        <div id="post-content-count" class="rich-text-count" aria-live="polite">0 / 5000</div>
                         <label for="post-image">Imagem (JPG, PNG ou WebP; até 5 MB)</label>
                         <input id="post-image" name="imagem" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required>
                         <button class="cta-button" type="submit">Publicar post</button>

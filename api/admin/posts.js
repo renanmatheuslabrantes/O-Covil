@@ -1,6 +1,7 @@
 import { del } from "@vercel/blob";
 import { sql } from "../_lib/db.js";
 import { requireSession } from "../_lib/auth.js";
+import { preparePostContent, toPublicPost } from "../_lib/post-content.js";
 
 const maximumImageSize = 5 * 1024 * 1024;
 const blobHostSuffix = ".public.blob.vercel-storage.com";
@@ -18,7 +19,8 @@ export default async function handler(req, res) {
 
     if (req.method === "POST") {
       const { titulo, conteudo, imagemUrl } = req.body || {};
-      if (!isValidText(titulo, 120) || !isValidText(conteudo, 5000) || !isValidImageUrl(imagemUrl)) {
+      const preparedContent = preparePostContent(conteudo);
+      if (!isValidText(titulo, 120) || !preparedContent || !isValidImageUrl(imagemUrl)) {
         return res.status(400).json({ error: "Informe título, conteúdo e uma imagem válida." });
       }
 
@@ -43,10 +45,10 @@ export default async function handler(req, res) {
 
       const [post] = await sql`
         insert into posts (titulo, conteudo, imagem_url)
-        values (${titulo.trim()}, ${conteudo.trim()}, ${imagemUrl})
+        values (${titulo.trim()}, ${preparedContent.stored}, ${imagemUrl})
         returning id, titulo, conteudo, imagem_url, criado_em
       `;
-      return res.status(201).json({ ...post, imagemUrl: post.imagem_url });
+      return res.status(201).json(toPublicPost(post));
     }
 
     if (req.method === "DELETE") {

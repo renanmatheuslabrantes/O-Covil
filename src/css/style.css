@@ -979,6 +979,86 @@ footer {
     resize: vertical;
 }
 
+.rich-text-toolbar {
+    align-items: center;
+    background: #202020;
+    border: 1px solid #3a3a3a;
+    border-bottom: 0;
+    border-radius: 6px 6px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    padding: 0.45rem;
+}
+
+.admin-form .rich-text-toolbar button {
+    background: #181818;
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: var(--cor-texto-principal);
+    cursor: pointer;
+    margin: 0;
+    min-height: 2.25rem;
+    min-width: 2.25rem;
+    padding: 0.35rem 0.55rem;
+}
+
+.admin-form .rich-text-toolbar button:hover,
+.admin-form .rich-text-toolbar button:focus-visible {
+    border-color: var(--cor-primaria);
+    color: var(--cor-primaria);
+    outline: 2px solid var(--cor-primaria);
+    outline-offset: 1px;
+}
+
+.rich-text-editor {
+    background: #181818;
+    border: 1px solid #333;
+    border-radius: 0 0 6px 6px;
+    color: var(--cor-texto-principal);
+    line-height: 1.6;
+    min-height: 12rem;
+    max-height: 32rem;
+    overflow-y: auto;
+    overflow-wrap: anywhere;
+    padding: 0.9rem;
+}
+
+.rich-text-editor:focus {
+    border-color: var(--cor-primaria);
+    outline: 2px solid var(--cor-primaria);
+}
+
+.rich-text-editor:empty::before {
+    color: #888;
+    content: attr(data-placeholder);
+    pointer-events: none;
+}
+
+.rich-text-editor p {
+    margin: 0 0 0.75rem;
+}
+
+.rich-text-editor ul,
+.rich-text-editor ol {
+    padding-left: 1.5rem;
+}
+
+.rich-text-editor a {
+    color: var(--cor-primaria);
+    text-decoration: underline;
+}
+
+.rich-text-count {
+    color: var(--cor-texto-secundario);
+    font-size: 0.85rem;
+    text-align: right;
+}
+
+.rich-text-count.is-over-limit {
+    color: #e58d8d;
+}
+
 .admin-form input:focus,
 .admin-form textarea:focus {
     outline: 2px solid var(--cor-primaria);
