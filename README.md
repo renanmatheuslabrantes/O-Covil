@@ -73,10 +73,13 @@ cd O-Covil
   - `DATABASE_URL`: conexão do Neon.
   - `BLOB_READ_WRITE_TOKEN`: token criado pelo Vercel Blob.
   - `AUTH_SECRET`: uma chave aleatória longa para assinar a sessão.
+  - `CRON_SECRET`: uma chave aleatória longa para proteger a limpeza automática de notícias.
   - `ADMIN_USERNAME`: login do administrador (ou `ADMIN_EMAIL` para compatibilidade com configurações existentes).
   - `ADMIN_PASSWORD`: senha do administrador.
 
 Não coloque essas variáveis diretamente no código. A API usa `AUTH_SECRET` para proteger o cookie da sessão e exige autenticação para alterar notícias, carrossel e imagens.
+
+As notícias deixam de aparecer após 30 dias e são removidas diariamente junto com as respectivas imagens no Blob. A rotina usa `CRON_SECRET`, que deve estar configurada em Production na Vercel.
 
 ### Posts com imagem
 

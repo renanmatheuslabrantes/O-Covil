@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === "GET") {
-      const items = await sql`select id, titulo, texto, link, capa_url from news order by criado_em desc`;
+      const items = await sql`select id, titulo, texto, link, capa_url from news where criado_em > now() - interval '30 days' order by criado_em desc`;
       return res.status(200).json(items.map((item) => ({ ...item, capaUrl: item.capa_url })));
     }
     if (req.method === "POST") {

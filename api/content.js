@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
   try {
     const [news, carousel] = await Promise.all([
-      sql`select id, titulo, texto, link, capa_url, criado_em from news order by criado_em desc`,
+      sql`select id, titulo, texto, link, capa_url, criado_em from news where criado_em > now() - interval '30 days' order by criado_em desc`,
       sql`select id, legenda, link, imagem_url, criado_em from carousel order by criado_em asc`
     ]);
 
