@@ -28,6 +28,7 @@ export function toPublicPost(post) {
   return {
     id: post.id,
     titulo: post.titulo,
+    resumo: post.resumo || "",
     conteudo: text,
     conteudoHtml: html,
     imagemUrl: post.imagem_url,

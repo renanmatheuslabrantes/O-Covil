@@ -154,7 +154,12 @@ document.getElementById("post-form").addEventListener("submit", async (event) =>
     setFormBusy(form, true, "Publicando...");
     await request("/api/admin/posts", {
       method: "POST",
-      body: JSON.stringify({ titulo: form.titulo.value.trim(), conteudo: form.conteudo.value.trim(), imagemUrl: image.url })
+      body: JSON.stringify({
+        titulo: form.titulo.value.trim(),
+        resumo: form.resumo.value.trim(),
+        conteudo: form.conteudo.value.trim(),
+        imagemUrl: image.url
+      })
     });
     form.reset();
     postEditor.replaceChildren();

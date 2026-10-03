@@ -16,7 +16,7 @@ export default async function handler(req, res) {
       }
 
       const [post] = await sql`
-        select posts.id, posts.titulo, posts.conteudo, posts.imagem_url, posts.criado_em, posts.author_login,
+        select posts.id, posts.titulo, posts.resumo, posts.conteudo, posts.imagem_url, posts.criado_em, posts.author_login,
           profiles.display_name as author_display_name,
           profiles.description as author_description,
           profiles.avatar_url as author_avatar_url
@@ -32,7 +32,7 @@ export default async function handler(req, res) {
     }
 
     const posts = await sql`
-      select posts.id, posts.titulo, posts.conteudo, posts.imagem_url, posts.criado_em, posts.author_login,
+      select posts.id, posts.titulo, posts.resumo, posts.conteudo, posts.imagem_url, posts.criado_em, posts.author_login,
         profiles.display_name as author_display_name,
         profiles.description as author_description,
         profiles.avatar_url as author_avatar_url

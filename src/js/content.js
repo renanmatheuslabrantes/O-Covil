@@ -42,7 +42,7 @@ function createPostCard(post) {
   const title = document.createElement("h3");
   title.textContent = post.titulo;
   const body = document.createElement("p");
-  body.textContent = post.conteudo;
+  body.textContent = post.resumo || "Leia a publicação para ver os detalhes.";
   const readMore = document.createElement("span");
   readMore.className = "card-read-more";
   readMore.textContent = "Ler publicação →";

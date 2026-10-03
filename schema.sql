@@ -10,6 +10,7 @@ create table if not exists news (
 create table if not exists posts (
   id bigserial primary key,
   titulo varchar(120) not null,
+  resumo varchar(280) not null default '',
   conteudo text not null,
   imagem_url text not null,
   author_login text,
@@ -17,6 +18,7 @@ create table if not exists posts (
 );
 
 alter table posts add column if not exists author_login text;
+alter table posts add column if not exists resumo varchar(280) not null default '';
 
 create table if not exists post_rate_limits (
   admin_login text primary key,

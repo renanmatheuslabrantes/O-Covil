@@ -13,15 +13,15 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === "GET") {
-      const posts = await sql`select id, titulo, conteudo, imagem_url, criado_em from posts order by criado_em desc`;
+      const posts = await sql`select id, titulo, resumo, conteudo, imagem_url, criado_em from posts order by criado_em desc`;
       return res.status(200).json(posts.map((post) => ({ ...post, imagemUrl: post.imagem_url })));
     }
 
     if (req.method === "POST") {
-      const { titulo, conteudo, imagemUrl } = req.body || {};
+      const { titulo, resumo, conteudo, imagemUrl } = req.body || {};
       const preparedContent = preparePostContent(conteudo);
-      if (!isValidText(titulo, 120) || !preparedContent || !isValidImageUrl(imagemUrl)) {
-        return res.status(400).json({ error: "Informe título, conteúdo e uma imagem válida." });
+      if (!isValidText(titulo, 120) || !isValidText(resumo, 280) || !preparedContent || !isValidImageUrl(imagemUrl)) {
+        return res.status(400).json({ error: "Informe título, descrição, conteúdo e uma imagem válida." });
       }
 
       const [rateLimit] = await sql`
@@ -44,9 +44,9 @@ export default async function handler(req, res) {
       }
 
       const [post] = await sql`
-        insert into posts (titulo, conteudo, imagem_url, author_login)
-        values (${titulo.trim()}, ${preparedContent.stored}, ${imagemUrl}, ${session.email})
-        returning id, titulo, conteudo, imagem_url, criado_em, author_login
+        insert into posts (titulo, resumo, conteudo, imagem_url, author_login)
+        values (${titulo.trim()}, ${resumo.trim()}, ${preparedContent.stored}, ${imagemUrl}, ${session.email})
+        returning id, titulo, resumo, conteudo, imagem_url, criado_em, author_login
       `;
       return res.status(201).json(toPublicPost(post));
     }
