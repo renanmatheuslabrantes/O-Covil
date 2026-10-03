@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "node --check src/js/admin.js && node --check src/js/content.js && node --check src/js/post.js && node --check src/js/alistamento.js && node --check api/_lib/db.js && node --check api/_lib/auth.js && node --check api/_lib/password.js && node --check api/_lib/post-content.js && node --check api/admin/upload.js && node --check api/admin/login.js && node --check api/admin/session.js && node --check api/admin/profile.js && node --check api/admin/users.js && node --check api/admin/posts.js && node --check api/admin/carousel.js && node --check api/admin/news.js && node --check api/posts.js && node --check api/cron/cleanup-news.js"
+    "check": "node --check src/js/admin.js && node --check src/js/content.js && node --check src/js/post.js && node --check src/js/alistamento.js && node --check api/_lib/db.js && node --check api/_lib/auth.js && node --check api/_lib/password.js && node --check api/_lib/post-content.js && node --check api/admin/upload.js && node --check api/admin/session.js && node --check api/admin/profile.js && node --check api/admin/users.js && node --check api/admin/posts.js && node --check api/admin/carousel.js && node --check api/admin/news.js && node --check api/posts.js && node --check api/cron/cleanup-news.js"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.2",

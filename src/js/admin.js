@@ -50,7 +50,7 @@ loginForm.addEventListener("submit", async (event) => {
   setFormBusy(loginForm, true, "Entrando...");
   let session;
   try {
-    session = await request("/api/admin/login", {
+    session = await request("/api/admin/session", {
       method: "POST",
       body: JSON.stringify({
         login: document.getElementById("login-username").value,
