@@ -6,7 +6,8 @@ const contentTypesByExtension = {
   jpg: "image/jpeg",
   jpeg: "image/jpeg",
   png: "image/png",
-  webp: "image/webp"
+  webp: "image/webp",
+  gif: "image/gif"
 };
 
 export default async function handler(req, res) {
@@ -24,7 +25,9 @@ export default async function handler(req, res) {
           throw new Error("UNAUTHORIZED");
         }
 
-        const match = pathname.match(/^(posts|content)\/([0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})\.(jpg|jpeg|png|webp)$/i);
+        const match = pathname.match(/^(posts|content)\/([0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})\.(jpg|jpeg|png|webp|gif)$/i);
+        const isCarouselAsset = match?.[1] === "content";
+        const extension = match?.[3].toLowerCase();
         let metadata;
         try {
           metadata = JSON.parse(clientPayload || "{}");
@@ -32,12 +35,14 @@ export default async function handler(req, res) {
           throw new Error("Arquivo de imagem inválido.");
         }
 
-        if (!match || !metadata || contentTypesByExtension[match[3].toLowerCase()] !== metadata.contentType) {
+        if (!match || (extension === "gif" && !isCarouselAsset) || !metadata || contentTypesByExtension[extension] !== metadata.contentType) {
           throw new Error("Extensão e tipo de imagem não correspondem.");
         }
 
         return {
-          allowedContentTypes: ["image/jpeg", "image/png", "image/webp"],
+          allowedContentTypes: isCarouselAsset
+            ? ["image/jpeg", "image/png", "image/webp", "image/gif"]
+            : ["image/jpeg", "image/png", "image/webp"],
           maximumSizeInBytes,
           validUntil: Date.now() + 5 * 60 * 1000
         };

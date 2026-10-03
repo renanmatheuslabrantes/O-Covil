@@ -63,34 +63,11 @@ document.getElementById("post-form").addEventListener("submit", async (event) =>
   }
 });
 
-document.getElementById("news-form").addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const form = event.currentTarget;
-  const file = form.capa.files[0];
-  if (!validateImage(file)) return;
-  setFormBusy(form, true, "Publicando...");
-
-  try {
-    const upload = await uploadImage(file, "content");
-    await request("/api/admin/news", {
-      method: "POST",
-      body: JSON.stringify({ titulo: form.titulo.value.trim(), texto: form.texto.value.trim(), link: form.link.value.trim(), capaUrl: upload.url })
-    });
-    form.reset();
-    showMessage("Notícia publicada.");
-    await loadContentLists();
-  } catch (error) {
-    showMessage(error.message || "Não foi possível publicar a notícia.", true);
-  } finally {
-    setFormBusy(form, false, "Publicar notícia");
-  }
-});
-
 document.getElementById("carousel-form").addEventListener("submit", async (event) => {
   event.preventDefault();
   const form = event.currentTarget;
   const file = form.imagem.files[0];
-  if (!validateImage(file)) return;
+  if (!validateImage(file, true)) return;
   setFormBusy(form, true, "Enviando...");
 
   try {
@@ -222,11 +199,12 @@ function request(url, options = {}) {
   });
 }
 
-function validateImage(file) {
+function validateImage(file, allowGif = false) {
   const acceptedTypes = { jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp" };
+  if (allowGif) acceptedTypes.gif = "image/gif";
   const extension = file?.name.split(".").pop().toLowerCase();
   if (!file || acceptedTypes[extension] !== file.type) {
-    showMessage("Use uma imagem JPG, PNG ou WebP válida.", true);
+    showMessage(`Use uma imagem ${allowGif ? "JPG, PNG, WebP ou GIF" : "JPG, PNG ou WebP"} válida.`, true);
     return false;
   }
   if (file.size > 5 * 1024 * 1024) {

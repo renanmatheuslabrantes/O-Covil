@@ -784,8 +784,8 @@ nav a:hover {
     border-radius: 8px;
     color: var(--cor-texto-secundario);
     margin: 48px auto;
-    max-width: 900px;
-    padding: 32px 24px;
+    max-width: 1100px;
+    padding: 40px 48px;
 }
 
 .post-back-link {
@@ -802,6 +802,7 @@ nav a:hover {
 .post-detail h1 {
     color: var(--cor-primaria);
     font-family: var(--fonte-titulos);
+    font-size: 2.2rem;
     margin-bottom: 12px;
 }
 
@@ -811,19 +812,38 @@ nav a:hover {
 }
 
 .post-detail img {
+    background-color: rgba(0, 0, 0, 0.2);
     border-radius: 6px;
     display: block;
     height: auto;
     margin: 0 auto 24px;
-    max-height: 560px;
+    max-height: min(72vh, 760px);
     max-width: 100%;
     object-fit: contain;
+    width: 100%;
 }
 
 .post-detail-content {
+    font-size: 1.1rem;
     line-height: 1.7;
+    max-width: 850px;
     white-space: pre-wrap;
     overflow-wrap: anywhere;
+}
+
+@media (max-width: 700px) {
+    .post-detail {
+        margin: 24px 12px;
+        padding: 24px 18px;
+    }
+
+    .post-detail h1 {
+        font-size: 1.7rem;
+    }
+
+    .post-detail img {
+        max-height: 60vh;
+    }
 }
 
 .post-status {

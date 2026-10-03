@@ -45,29 +45,14 @@
                 </section>
 
                 <section class="admin-panel">
-                    <h2>Nova notícia</h2>
-                    <form id="news-form" class="admin-form">
-                        <label for="news-title">Título</label>
-                        <input id="news-title" name="titulo" maxlength="120" required>
-                        <label for="news-text">Texto</label>
-                        <textarea id="news-text" name="texto" rows="6" maxlength="2000" required></textarea>
-                        <label for="news-link">Link dos detalhes (opcional)</label>
-                        <input id="news-link" name="link" type="url" placeholder="https://...">
-                        <label for="news-cover">Imagem de capa (JPG, PNG ou WebP; até 5 MB)</label>
-                        <input id="news-cover" name="capa" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required>
-                        <button class="cta-button" type="submit">Publicar notícia</button>
-                    </form>
-                </section>
-
-                <section class="admin-panel">
                     <h2>Nova foto no carrossel</h2>
                     <form id="carousel-form" class="admin-form">
                         <label for="carousel-caption">Legenda (opcional)</label>
                         <input id="carousel-caption" name="legenda" maxlength="160">
                         <label for="carousel-link">Link ao clicar (opcional)</label>
                         <input id="carousel-link" name="link" type="url" placeholder="https://...">
-                        <label for="carousel-image">Imagem (JPG, PNG ou WebP; até 5 MB)</label>
-                        <input id="carousel-image" name="imagem" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required>
+                        <label for="carousel-image">Imagem (JPG, PNG, WebP ou GIF; até 5 MB)</label>
+                        <input id="carousel-image" name="imagem" type="file" accept=".jpg,.jpeg,.png,.webp,.gif,image/jpeg,image/png,image/webp,image/gif" required>
                         <button class="cta-button" type="submit">Adicionar ao carrossel</button>
                     </form>
                 </section>
