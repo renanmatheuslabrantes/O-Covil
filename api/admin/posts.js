@@ -44,14 +44,17 @@ export default async function handler(req, res) {
       }
 
       const [post] = await sql`
-        insert into posts (titulo, conteudo, imagem_url)
-        values (${titulo.trim()}, ${preparedContent.stored}, ${imagemUrl})
-        returning id, titulo, conteudo, imagem_url, criado_em
+        insert into posts (titulo, conteudo, imagem_url, author_login)
+        values (${titulo.trim()}, ${preparedContent.stored}, ${imagemUrl}, ${session.email})
+        returning id, titulo, conteudo, imagem_url, criado_em, author_login
       `;
       return res.status(201).json(toPublicPost(post));
     }
 
     if (req.method === "DELETE") {
+      if (session.role !== "admin") {
+        return res.status(403).json({ error: "Somente administradores podem remover publicações." });
+      }
       const id = Number(req.query.id);
       if (!Number.isSafeInteger(id) || id < 1) {
         return res.status(400).json({ error: "Identificador inválido." });

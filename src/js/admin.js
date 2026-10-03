@@ -12,6 +12,16 @@ const postEditor = document.getElementById("post-content");
 const postEditorToolbar = document.getElementById("post-editor-toolbar");
 const postContentValue = document.getElementById("post-content-value");
 const postContentCount = document.getElementById("post-content-count");
+const profileForm = document.getElementById("profile-form");
+const profileAvatarPreview = document.getElementById("profile-avatar-preview");
+const accountsPanel = document.getElementById("accounts-panel");
+const accountsList = document.getElementById("accounts-list");
+const accountForm = document.getElementById("account-form");
+const accountRole = document.getElementById("account-role");
+const accountAdminOption = document.getElementById("account-admin-option");
+let currentSession = null;
+let currentProfile = null;
+let selectedAvatarPreviewUrl = null;
 
 postEditorToolbar.addEventListener("mousedown", (event) => {
   if (event.target.closest("button")) event.preventDefault();
@@ -38,8 +48,9 @@ checkSession();
 loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   setFormBusy(loginForm, true, "Entrando...");
+  let session;
   try {
-    await request("/api/admin/login", {
+    session = await request("/api/admin/login", {
       method: "POST",
       body: JSON.stringify({
         login: document.getElementById("login-username").value,
@@ -54,13 +65,80 @@ loginForm.addEventListener("submit", async (event) => {
 
   loginForm.reset();
   setFormBusy(loginForm, false, "Entrar");
-  showAuthenticatedArea(true);
+  showAuthenticatedArea(true, session);
+  await loadProfile();
   await loadContentLists();
 });
 
 logoutButton.addEventListener("click", async () => {
   await request("/api/admin/logout", { method: "POST" });
   showAuthenticatedArea(false);
+});
+
+profileForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const file = form.elements.namedItem("avatar").files[0];
+  const clearAvatar = document.getElementById("profile-clear-avatar").checked;
+  if (file && !validateImage(file)) return;
+  setFormBusy(form, true, file ? "Enviando foto..." : "Salvando perfil...");
+
+  try {
+    let avatarUrl = clearAvatar ? "" : currentProfile?.avatarUrl || "";
+    if (file) avatarUrl = (await uploadImage(file, "profiles")).url;
+    const profile = await request("/api/admin/profile", {
+      method: "PUT",
+      body: JSON.stringify({
+        displayName: form.elements.namedItem("displayName").value.trim(),
+        description: form.elements.namedItem("description").value.trim(),
+        avatarUrl
+      })
+    });
+    currentProfile = profile;
+    form.reset();
+    document.getElementById("profile-display-name").value = profile.displayName;
+    document.getElementById("profile-description").value = profile.description;
+    document.getElementById("profile-clear-avatar").checked = false;
+    if (selectedAvatarPreviewUrl) URL.revokeObjectURL(selectedAvatarPreviewUrl);
+    selectedAvatarPreviewUrl = null;
+    renderProfileAvatar(profile.avatarUrl);
+    showMessage("Perfil atualizado.");
+  } catch (error) {
+    showMessage(error.message || "Não foi possível salvar o perfil.", true);
+  } finally {
+    setFormBusy(form, false, "Salvar perfil");
+  }
+});
+
+document.getElementById("profile-avatar").addEventListener("change", (event) => {
+  if (selectedAvatarPreviewUrl) URL.revokeObjectURL(selectedAvatarPreviewUrl);
+  const file = event.currentTarget.files[0];
+  selectedAvatarPreviewUrl = file ? URL.createObjectURL(file) : null;
+  renderProfileAvatar(selectedAvatarPreviewUrl || currentProfile?.avatarUrl || "");
+});
+
+accountForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const form = event.currentTarget;
+  setFormBusy(form, true, "Criando conta...");
+  try {
+    const account = await request("/api/admin/users", {
+      method: "POST",
+      body: JSON.stringify({
+        login: form.elements.namedItem("login").value.trim(),
+        password: form.elements.namedItem("password").value,
+        role: form.elements.namedItem("role").value
+      })
+    });
+    form.reset();
+    if (!currentSession.isBootstrapAdmin) accountRole.value = "journalist";
+    showMessage(`Conta ${account.login} criada como ${account.role === "admin" ? "administrador" : "jornalista"}.`);
+    await loadAccounts();
+  } catch (error) {
+    showMessage(error.message || "Não foi possível criar a conta.", true);
+  } finally {
+    setFormBusy(form, false, "Criar conta");
+  }
 });
 
 document.getElementById("post-form").addEventListener("submit", async (event) => {
@@ -115,30 +193,77 @@ document.getElementById("carousel-form").addEventListener("submit", async (event
 
 async function checkSession() {
   try {
-    await request("/api/admin/session");
+    const session = await request("/api/admin/session");
+    showAuthenticatedArea(true, session);
   } catch {
     showAuthenticatedArea(false);
     return;
   }
-  showAuthenticatedArea(true);
+  await loadProfile();
   await loadContentLists();
 }
 
-function showAuthenticatedArea(authenticated) {
+function showAuthenticatedArea(authenticated, session = null) {
+  currentSession = authenticated ? session : null;
   loginPanel.hidden = authenticated;
   contentPanel.hidden = !authenticated;
   logoutButton.hidden = !authenticated;
+  const isAdmin = currentSession?.role === "admin";
+  accountsPanel.hidden = !isAdmin;
+  document.getElementById("news-panel").hidden = !isAdmin;
+  accountAdminOption.hidden = !currentSession?.isBootstrapAdmin;
+  if (!currentSession?.isBootstrapAdmin && accountRole.value === "admin") accountRole.value = "journalist";
+}
+
+async function loadProfile() {
+  try {
+    currentProfile = await request("/api/admin/profile");
+    document.getElementById("profile-display-name").value = currentProfile.displayName;
+    document.getElementById("profile-description").value = currentProfile.description;
+    renderProfileAvatar(currentProfile.avatarUrl);
+  } catch (error) {
+    showMessage(error.message || "Não foi possível carregar o perfil.", true);
+  }
+}
+
+function renderProfileAvatar(url) {
+  profileAvatarPreview.src = url || "";
+  profileAvatarPreview.hidden = !url;
 }
 
 async function loadContentLists() {
   try {
-    const [news, carousel] = await Promise.all([request("/api/admin/news"), request("/api/admin/carousel")]);
-    newsList.replaceChildren(...news.map((item) => createListItem(item, "news")));
+    const [news, carousel] = await Promise.all([
+      currentSession?.role === "admin" ? request("/api/admin/news") : Promise.resolve([]),
+      request("/api/admin/carousel")
+    ]);
+    if (currentSession?.role === "admin") {
+      newsList.replaceChildren(...news.map((item) => createListItem(item, "news")));
+      await loadAccounts();
+    }
     carouselList.replaceChildren(...carousel.map((item) => createListItem(item, "carousel")));
   } catch (error) {
     showMessage(error.message || "Não foi possível carregar as listas.", true);
   }
   await loadPosts();
+}
+
+async function loadAccounts() {
+  try {
+    const accounts = await request("/api/admin/users");
+    accountsList.replaceChildren(...accounts.map((account) => {
+      const item = document.createElement("article");
+      item.className = "admin-list-item account-list-item";
+      const login = document.createElement("strong");
+      login.textContent = account.login;
+      const role = document.createElement("span");
+      role.textContent = account.role === "admin" ? "Administrador" : "Jornalista";
+      item.append(login, role);
+      return item;
+    }));
+  } catch (error) {
+    showMessage(error.message || "Não foi possível carregar as contas.", true);
+  }
 }
 
 async function loadPosts() {
@@ -163,7 +288,8 @@ function createPostListItem(post) {
   removeButton.type = "button";
   removeButton.textContent = "Remover";
   removeButton.addEventListener("click", () => removePost(post.id));
-  item.append(image, title, removeButton);
+  item.append(image, title);
+  if (currentSession?.role === "admin") item.append(removeButton);
   return item;
 }
 
@@ -191,7 +317,8 @@ function createListItem(data, type) {
   removeButton.type = "button";
   removeButton.textContent = "Remover";
   removeButton.addEventListener("click", () => removeContent(data.id, type));
-  item.append(image, title, removeButton);
+  item.append(image, title);
+  if (currentSession?.role === "admin") item.append(removeButton);
   return item;
 }
 

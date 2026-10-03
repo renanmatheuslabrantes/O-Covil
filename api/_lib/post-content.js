@@ -31,6 +31,12 @@ export function toPublicPost(post) {
     conteudo: text,
     conteudoHtml: html,
     imagemUrl: post.imagem_url,
-    criadoEm: post.criado_em
+    criadoEm: post.criado_em,
+    autor: post.author_login ? {
+      login: post.author_login,
+      nome: post.author_display_name || post.author_login,
+      descricao: post.author_description || "",
+      fotoUrl: post.author_avatar_url || ""
+    } : null
   };
 }

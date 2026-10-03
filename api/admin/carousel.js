@@ -3,9 +3,8 @@ import { sql } from "../_lib/db.js";
 import { requireSession } from "../_lib/auth.js";
 
 export default async function handler(req, res) {
-  if (!requireSession(req, res)) {
-    return;
-  }
+  const session = requireSession(req, res);
+  if (!session) return;
 
   try {
     if (req.method === "GET") {
@@ -21,6 +20,9 @@ export default async function handler(req, res) {
       return res.status(201).json({ ...item, imagemUrl: item.imagem_url });
     }
     if (req.method === "DELETE") {
+      if (session.role !== "admin") {
+        return res.status(403).json({ error: "Somente administradores podem remover imagens." });
+      }
       const id = Number(req.query.id);
       if (!Number.isInteger(id)) {
         return res.status(400).json({ error: "Identificador inválido." });

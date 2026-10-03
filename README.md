@@ -113,3 +113,5 @@ Uploads aceitam JPG, JPEG, PNG e WebP até 5 MiB. A função autenticada restrin
 ### Painel de conteúdo
 
 Acesse `/admin.html` no domínio da Vercel para publicar notícias e gerenciar as fotos do carrossel. O formulário público de alistamento grava na tabela `alistamentos`.
+
+Cada administrador ou jornalista pode editar o próprio nome público, descrição e foto. Posts novos recebem a assinatura do autor na página da matéria. O administrador inicial cria as contas; jornalistas podem publicar posts e adicionar fotos ao carrossel, mas não remover conteúdo nem gerenciar contas. As senhas são armazenadas com scrypt na tabela `admin_users`, e os perfis ficam em `admin_profiles`.

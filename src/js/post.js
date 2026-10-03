@@ -32,6 +32,22 @@ async function loadPost(id) {
     } else {
       body.textContent = post.conteudo;
     }
+
+    if (post.autor) {
+      const signature = document.getElementById("post-author-signature");
+      document.getElementById("post-author-name").textContent = post.autor.nome;
+      document.getElementById("post-author-description").textContent = post.autor.descricao;
+      const avatar = document.getElementById("post-author-avatar");
+      if (post.autor.fotoUrl) {
+        avatar.src = post.autor.fotoUrl;
+        avatar.alt = `Foto de ${post.autor.nome}`;
+        avatar.hidden = false;
+      } else {
+        avatar.hidden = true;
+      }
+      signature.hidden = false;
+    }
+
     status.hidden = true;
     content.hidden = false;
   } catch {

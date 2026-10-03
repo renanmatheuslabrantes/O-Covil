@@ -68,12 +68,44 @@
                 </section>
             </div>
 
+            <section id="profile-panel" class="admin-panel admin-list-panel">
+                <h2>Meu perfil</h2>
+                <form id="profile-form" class="admin-form">
+                    <label for="profile-display-name">Nome público</label>
+                    <input id="profile-display-name" name="displayName" maxlength="80" required>
+                    <label for="profile-description">Sobre mim</label>
+                    <textarea id="profile-description" name="description" rows="4" maxlength="500" placeholder="Escreva uma breve apresentação"></textarea>
+                    <label for="profile-avatar">Foto de perfil (JPG, PNG ou WebP; até 5 MB)</label>
+                    <input id="profile-avatar" name="avatar" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+                    <img id="profile-avatar-preview" class="profile-avatar-preview" alt="Prévia da foto de perfil" hidden>
+                    <label class="profile-clear-option"><input id="profile-clear-avatar" type="checkbox"> Remover foto atual</label>
+                    <button class="cta-button" type="submit">Salvar perfil</button>
+                </form>
+            </section>
+
+            <section id="accounts-panel" class="admin-panel admin-list-panel" hidden>
+                <h2>Contas do painel</h2>
+                <form id="account-form" class="admin-form">
+                    <label for="account-login">Usuário</label>
+                    <input id="account-login" name="login" autocomplete="off" minlength="3" maxlength="32" pattern="[A-Za-z0-9._-]+" required>
+                    <label for="account-password">Senha inicial (mínimo de 12 caracteres)</label>
+                    <input id="account-password" name="password" type="password" autocomplete="new-password" minlength="12" maxlength="128" required>
+                    <label for="account-role">Perfil</label>
+                    <select id="account-role" name="role" required>
+                        <option value="journalist">Jornalista</option>
+                        <option id="account-admin-option" value="admin" hidden>Administrador</option>
+                    </select>
+                    <button class="cta-button" type="submit">Criar conta</button>
+                </form>
+                <div id="accounts-list" class="admin-list"></div>
+            </section>
+
             <section class="admin-panel admin-list-panel">
                 <h2>Posts publicados</h2>
                 <div id="posts-list" class="admin-list"></div>
             </section>
 
-            <section class="admin-panel admin-list-panel">
+            <section id="news-panel" class="admin-panel admin-list-panel">
                 <h2>Notícias publicadas</h2>
                 <div id="news-list" class="admin-list"></div>
             </section>

@@ -2,8 +2,8 @@ import crypto from "node:crypto";
 
 const cookieName = "ocovil_session";
 
-export function createSessionCookie(email) {
-  const payload = Buffer.from(JSON.stringify({ email, expiresAt: Date.now() + 8 * 60 * 60 * 1000 })).toString("base64url");
+export function createSessionCookie(email, role = "admin", isBootstrapAdmin = false) {
+  const payload = Buffer.from(JSON.stringify({ email, role, isBootstrapAdmin, expiresAt: Date.now() + 8 * 60 * 60 * 1000 })).toString("base64url");
   const signature = sign(payload);
   return `${cookieName}=${payload}.${signature}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=28800`;
 }
@@ -29,7 +29,12 @@ export function getSession(req) {
 
   try {
     const session = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
-    return session.expiresAt > Date.now() ? session : null;
+    if (session.expiresAt <= Date.now()) return null;
+    if (!session.role) {
+      session.role = "admin";
+      session.isBootstrapAdmin = true;
+    }
+    return session;
   } catch {
     return null;
   }
@@ -52,4 +57,14 @@ function safeEqual(first, second) {
   const firstBuffer = Buffer.from(first);
   const secondBuffer = Buffer.from(second);
   return firstBuffer.length === secondBuffer.length && crypto.timingSafeEqual(firstBuffer, secondBuffer);
+}
+
+export function requireRole(req, res, allowedRoles) {
+  const session = requireSession(req, res);
+  if (!session) return null;
+  if (!allowedRoles.includes(session.role)) {
+    res.status(403).json({ error: "Permissão insuficiente." });
+    return null;
+  }
+  return session;
 }

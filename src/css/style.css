@@ -831,6 +831,69 @@ nav a:hover {
     overflow-wrap: anywhere;
 }
 
+.post-author-signature {
+    align-items: center;
+    border-top: 1px solid rgba(200, 155, 60, 0.25);
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    max-width: 850px;
+    padding-top: 1.25rem;
+}
+
+.post-author-signature[hidden] {
+    display: none;
+}
+
+.post-author-signature img {
+    border: 1px solid rgba(200, 155, 60, 0.4);
+    border-radius: 50%;
+    flex: 0 0 64px;
+    height: 64px;
+    margin: 0;
+    object-fit: cover;
+    width: 64px;
+}
+
+.post-author-signature span {
+    color: var(--cor-texto-secundario);
+    display: block;
+    font-size: 0.9rem;
+}
+
+.post-author-signature strong {
+    color: var(--cor-primaria);
+    display: block;
+    margin-top: 0.15rem;
+}
+
+.post-author-signature p {
+    margin: 0.25rem 0 0;
+    white-space: pre-wrap;
+}
+
+.profile-avatar-preview {
+    border: 1px solid rgba(200, 155, 60, 0.4);
+    border-radius: 50%;
+    height: 112px;
+    object-fit: cover;
+    width: 112px;
+}
+
+.profile-clear-option {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.profile-clear-option input {
+    width: auto;
+}
+
+.account-list-item {
+    grid-template-columns: 1fr auto;
+}
+
 @media (max-width: 700px) {
     .post-detail {
         margin: 24px 12px;
@@ -965,7 +1028,8 @@ footer {
 }
 
 .admin-form input,
-.admin-form textarea {
+.admin-form textarea,
+.admin-form select {
     width: 100%;
     background: #181818;
     border: 1px solid #333;
@@ -1060,7 +1124,8 @@ footer {
 }
 
 .admin-form input:focus,
-.admin-form textarea:focus {
+.admin-form textarea:focus,
+.admin-form select:focus {
     outline: 2px solid var(--cor-primaria);
     border-color: var(--cor-primaria);
 }

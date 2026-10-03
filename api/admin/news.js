@@ -1,11 +1,9 @@
 import { del } from "@vercel/blob";
 import { sql } from "../_lib/db.js";
-import { requireSession } from "../_lib/auth.js";
+import { requireRole } from "../_lib/auth.js";
 
 export default async function handler(req, res) {
-  if (!requireSession(req, res)) {
-    return;
-  }
+  if (!requireRole(req, res, ["admin"])) return;
 
   try {
     if (req.method === "GET") {

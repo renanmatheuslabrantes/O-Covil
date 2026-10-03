@@ -20,12 +20,12 @@ export default async function handler(req, res) {
       body: req.body,
       request: req,
       onBeforeGenerateToken: async (pathname, clientPayload) => {
-        // Client tokens are issued only to an authenticated admin.
+        // Upload tokens are issued only to authenticated panel accounts.
         if (!getSession(req)) {
           throw new Error("UNAUTHORIZED");
         }
 
-        const match = pathname.match(/^(posts|content)\/([0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})\.(jpg|jpeg|png|webp|gif)$/i);
+        const match = pathname.match(/^(posts|content|profiles)\/([0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})\.(jpg|jpeg|png|webp|gif)$/i);
         const isCarouselAsset = match?.[1] === "content";
         const extension = match?.[3].toLowerCase();
         let metadata;
