@@ -69,7 +69,7 @@ function renderNewsPage(newsContainer, page, transition) {
   if (!transition) newsContainer.classList.remove("news-page-changing");
   const count = document.getElementById("news-count");
   const firstItem = pageNumberStart(currentNewsPage);
-  const lastItem = firstItem + page.items.length;
+  const lastItem = firstItem + page.items.length - 1;
   count.textContent = `Página ${currentNewsPage + 1} · notícias ${firstItem}–${lastItem}`;
 }
 
