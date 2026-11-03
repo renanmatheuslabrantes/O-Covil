@@ -105,13 +105,13 @@ src/
 1. No painel Vercel, abra **Storage** e crie um Blob Store público conectado a este projeto. Habilite o ambiente Production e confirme a variável `BLOB_READ_WRITE_TOKEN`.
 2. Em **Storage**, crie ou conecte o Postgres/Neon ao projeto e confirme `DATABASE_URL` no ambiente Production.
 3. Em **Settings → Environment Variables**, configure `AUTH_SECRET`, `ADMIN_USERNAME` e `ADMIN_PASSWORD` em Production. Não compartilhe esses valores nem os coloque no frontend.
-4. No console SQL do banco conectado, execute `schema.sql` para criar `posts` e `post_rate_limits` (além das tabelas já usadas pelo site).
+4. No console SQL do banco conectado, execute `schema.sql` para criar as tabelas e atualizar as colunas existentes. Execute-o novamente após atualizações de schema; as instruções são seguras para reaplicação.
 5. Faça um novo deploy depois de salvar as variáveis. A biblioteca de upload no navegador é carregada da versão `@vercel/blob@2.8.0` via esm.sh; o token de leitura/escrita continua exclusivamente no servidor.
 
 Uploads aceitam JPG, JPEG, PNG e WebP até 5 MiB. A função autenticada restringe os tipos, tamanho, extensão e nome aleatório antes de emitir token; a API de posts valida os campos e aceita apenas URLs públicas do Blob sob o caminho `posts/`. A rota POST limita cada sessão administrativa a 10 posts por hora usando Postgres.
 
 ### Painel de conteúdo
 
-Acesse `/admin.html` no domínio da Vercel para publicar notícias e gerenciar as fotos do carrossel. O formulário público de alistamento grava na tabela `alistamentos`.
+Acesse `/admin.html` no domínio da Vercel para publicar notícias e gerenciar as fotos do carrossel. A página inicial exibe no máximo 12 novidades. As visualizações de cada publicação aparecem no painel de administradores e jornalistas e na página da publicação. O formulário público de alistamento grava na tabela `alistamentos`.
 
 Cada administrador ou jornalista pode editar o próprio nome público, descrição e foto. Posts novos recebem a assinatura do autor na página da matéria. O administrador inicial cria as contas; jornalistas podem publicar posts e adicionar fotos ao carrossel, mas não remover conteúdo nem gerenciar contas. As senhas são armazenadas com scrypt na tabela `admin_users`, e os perfis ficam em `admin_profiles`.

@@ -1,29 +1,35 @@
+const maximumNewsItems = 12;
+
 export async function loadRemoteContent(newsContainer, carousel) {
-  try {
-    const response = await fetch("/api/content", { cache: "no-store" });
-    if (!response.ok) return;
-    const { news = [], carousel: remoteCarousel = [] } = await response.json();
+  const [contentResult, postsResult] = await Promise.all([
+    fetchJson("/api/content", "Falha ao carregar conteúdo remoto:", { news: [], carousel: [] }),
+    fetchJson("/api/posts", "Falha ao carregar publicações:", [])
+  ]);
+  const news = contentResult.news || [];
+  const posts = Array.isArray(postsResult) ? postsResult : [];
+  const items = [
+    ...news.map((item) => ({ date: item.criado_em || item.criadoEm, card: createNewsCard(item) })),
+    ...posts.map((item) => ({ date: item.criadoEm, card: createPostCard(item) }))
+  ];
 
-    // Notícias do painel entram no topo de "Nossas Novidades" (mais recentes primeiro),
-    // sem apagar as notícias fixas do site.
-    if (news.length) newsContainer.prepend(...news.map(createNewsCard));
+  items.sort((first, second) => new Date(second.date).getTime() - new Date(first.date).getTime());
+  newsContainer.replaceChildren(...items.slice(0, maximumNewsItems).map((item) => item.card));
 
-    // Fotos do painel entram depois dos slides fixos, mantendo os botões ‹ › do carrossel.
-    if (remoteCarousel.length) {
-      carousel.append(...remoteCarousel.map(createSlide));
-      syncCarouselIndicators(carousel);
-    }
-  } catch (error) {
-    console.error("Falha ao carregar conteúdo remoto:", error);
+  const remoteCarousel = contentResult.carousel || [];
+  if (remoteCarousel.length) {
+    carousel.append(...remoteCarousel.map(createSlide));
+    syncCarouselIndicators(carousel);
   }
+}
 
+async function fetchJson(url, errorMessage, fallback) {
   try {
-    const response = await fetch("/api/posts", { cache: "no-store" });
-    if (!response.ok) return;
-    const posts = await response.json();
-    if (posts.length) newsContainer.prepend(...posts.map(createPostCard));
+    const response = await fetch(url, { cache: "no-store" });
+    if (!response.ok) throw new Error(`Falha na requisição (${response.status}).`);
+    return await response.json();
   } catch (error) {
-    console.error("Falha ao carregar publicações:", error);
+    console.error(errorMessage, error);
+    return fallback;
   }
 }
 

@@ -129,6 +129,11 @@
     justify-content: center;
     min-height: 500px;
 }
+
+.carousel-section[hidden] {
+    display: none;
+}
+
 .hero-carousel {
     display: flex;
     flex-direction: column;
@@ -811,6 +816,12 @@ nav a:hover {
     margin-bottom: 24px;
 }
 
+.post-views {
+    color: var(--cor-primaria);
+    font-weight: 700;
+    margin: -12px 0 24px;
+}
+
 .post-detail img {
     background-color: rgba(0, 0, 0, 0.2);
     border-radius: 6px;
@@ -1187,6 +1198,16 @@ footer {
 .admin-list-item strong {
     color: var(--cor-texto-principal);
     overflow-wrap: anywhere;
+}
+
+.admin-list-item-details {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.admin-post-views {
+    color: var(--cor-texto-secundario);
+    font-size: 0.9rem;
 }
 
 .admin-remove-button {

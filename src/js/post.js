@@ -25,6 +25,8 @@ async function loadPost(id) {
     const time = document.getElementById("post-date");
     time.dateTime = date.toISOString();
     time.textContent = new Intl.DateTimeFormat("pt-BR", { dateStyle: "long", timeStyle: "short" }).format(date);
+    document.getElementById("post-views").textContent =
+      `Visualizações: ${new Intl.NumberFormat("pt-BR").format(post.visualizacoes || 0)}`;
 
     const body = document.getElementById("post-body");
     if (post.conteudoHtml) {
