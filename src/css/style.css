@@ -716,7 +716,7 @@ nav a:hover {
     display: flex;
     gap: 1rem;
     justify-content: center;
-    margin: -1rem 0 1.5rem;
+    margin: 1.5rem 0 0;
 }
 
 .news-carousel-button {
