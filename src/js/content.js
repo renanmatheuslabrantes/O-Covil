@@ -36,7 +36,7 @@ let loadingNewsPage = null;
 
 async function loadNewsPage(newsContainer, offset) {
   const response = await fetchJson(
-    `/api/newsfeed?offset=${offset}`,
+    `/api/posts?feed=1&offset=${offset}`,
     "Falha ao carregar notícias:",
     { items: [], hasMore: false }
   );
