@@ -6,6 +6,8 @@ const loginForm = document.getElementById("login-form");
 const logoutButton = document.getElementById("logout-button");
 const message = document.getElementById("admin-message");
 const newsList = document.getElementById("news-list");
+const recruitmentPanel = document.getElementById("recruitment-panel");
+const recruitmentList = document.getElementById("recruitment-list");
 const carouselList = document.getElementById("carousel-list");
 const postsList = document.getElementById("posts-list");
 const postEditor = document.getElementById("post-content");
@@ -216,6 +218,7 @@ function showAuthenticatedArea(authenticated, session = null) {
   const isAdmin = currentSession?.role === "admin";
   accountsPanel.hidden = !isAdmin;
   document.getElementById("news-panel").hidden = !isAdmin;
+  recruitmentPanel.hidden = !isAdmin;
   accountAdminOption.hidden = !currentSession?.isBootstrapAdmin;
   if (!currentSession?.isBootstrapAdmin && accountRole.value === "admin") accountRole.value = "journalist";
 }
@@ -238,12 +241,14 @@ function renderProfileAvatar(url) {
 
 async function loadContentLists() {
   try {
-    const [news, carousel] = await Promise.all([
+    const [news, carousel, applications] = await Promise.all([
       currentSession?.role === "admin" ? request("/api/admin/news") : Promise.resolve([]),
-      request("/api/admin/carousel")
+      request("/api/admin/carousel"),
+      currentSession?.role === "admin" ? request("/api/applications") : Promise.resolve([])
     ]);
     if (currentSession?.role === "admin") {
       newsList.replaceChildren(...news.map((item) => createListItem(item, "news")));
+      recruitmentList.replaceChildren(...applications.map(createRecruitmentItem));
       await loadAccounts();
     }
     carouselList.replaceChildren(...carousel.map((item) => createListItem(item, "carousel")));
@@ -251,6 +256,38 @@ async function loadContentLists() {
     showMessage(error.message || "Não foi possível carregar as listas.", true);
   }
   await loadPosts();
+}
+
+function createRecruitmentItem(application) {
+  const item = document.createElement("article");
+  item.className = "admin-recruitment-item";
+
+  const name = document.createElement("h3");
+  name.textContent = application.nome;
+
+  const details = document.createElement("dl");
+  appendRecruitmentDetail(details, "Nick do Discord", application.discord);
+  appendRecruitmentDetail(details, "E-mail", application.email);
+  appendRecruitmentDetail(details, "Por que deseja se juntar ao Covil?", application.motivo);
+
+  const submittedAt = new Date(application.criado_em);
+  appendRecruitmentDetail(
+    details,
+    "Enviado em",
+    new Intl.DateTimeFormat("pt-BR", { dateStyle: "medium", timeStyle: "short" }).format(submittedAt)
+  );
+  item.append(name, details);
+  return item;
+}
+
+function appendRecruitmentDetail(details, label, value) {
+  const row = document.createElement("div");
+  const term = document.createElement("dt");
+  term.textContent = label;
+  const description = document.createElement("dd");
+  description.textContent = value;
+  row.append(term, description);
+  details.append(row);
 }
 
 async function loadAccounts() {
