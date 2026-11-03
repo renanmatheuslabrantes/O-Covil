@@ -19,6 +19,7 @@ create table if not exists posts (
 
 alter table posts add column if not exists author_login text;
 alter table posts add column if not exists resumo varchar(280) not null default '';
+alter table posts add column if not exists visualizacoes bigint not null default 0;
 
 create table if not exists post_rate_limits (
   admin_login text primary key,

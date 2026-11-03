@@ -33,6 +33,7 @@ export function toPublicPost(post) {
     conteudoHtml: html,
     imagemUrl: post.imagem_url,
     criadoEm: post.criado_em,
+    visualizacoes: Number(post.visualizacoes || 0),
     autor: post.author_login ? {
       login: post.author_login,
       nome: post.author_display_name || post.author_login,

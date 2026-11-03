@@ -13,7 +13,7 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === "GET") {
-      const posts = await sql`select id, titulo, resumo, conteudo, imagem_url, criado_em from posts order by criado_em desc`;
+      const posts = await sql`select id, titulo, resumo, conteudo, imagem_url, criado_em, visualizacoes from posts order by criado_em desc`;
       return res.status(200).json(posts.map((post) => ({ ...post, imagemUrl: post.imagem_url })));
     }
 

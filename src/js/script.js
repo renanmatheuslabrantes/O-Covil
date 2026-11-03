@@ -5,24 +5,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   const carousel = document.getElementById("carousel")
   const newsContainer = document.getElementById("news-container")
 
-  const slidesFetch = [
-    { path: "/src/injectables/carousel/raids1.html", target: carousel, options: { position: 1 } },
-    { path: "/src/injectables/carousel/raids2.html", target: carousel, options: { position: 2 } },
-    { path: "/src/injectables/carousel/us.html", target: carousel, options: { position: 3 } }
-  ]
-
-  await Promise.all(slidesFetch.map(async (slide) => await injectHTML(slide.path, slide.target, slide.options)))
-
-  const newsFetch = [
-    { path: "/src/injectables/articles/amigavel-iniciantes.html", target: newsContainer, options: { position: 1 } },
-    { path: "/src/injectables/articles/raids.html", target: newsContainer, options: { position: 2 } },
-  ]
-
-  await Promise.all(newsFetch.map(async (slide) => await injectHTML(slide.path, slide.target, slide.options)))
   await loadRemoteContent(newsContainer, carousel)
 
-
   const slides = document.querySelectorAll(".slide");
+  if (!slides.length) {
+    carousel.closest(".carousel-section").hidden = true;
+    return;
+  }
+
   const dots = document.querySelectorAll(".dot");
   let current = 0;
 

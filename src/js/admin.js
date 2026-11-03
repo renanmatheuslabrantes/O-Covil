@@ -288,12 +288,18 @@ function createPostListItem(post) {
   image.alt = post.titulo;
   const title = document.createElement("strong");
   title.textContent = post.titulo;
+  const views = document.createElement("span");
+  views.className = "admin-post-views";
+  views.textContent = `${new Intl.NumberFormat("pt-BR").format(post.visualizacoes || 0)} visualizações`;
+  const details = document.createElement("div");
+  details.className = "admin-list-item-details";
+  details.append(title, views);
   const removeButton = document.createElement("button");
   removeButton.className = "admin-remove-button";
   removeButton.type = "button";
   removeButton.textContent = "Remover";
   removeButton.addEventListener("click", () => removePost(post.id));
-  item.append(image, title);
+  item.append(image, details);
   if (currentSession?.role === "admin") item.append(removeButton);
   return item;
 }
