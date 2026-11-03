@@ -1,25 +1,68 @@
-const maximumNewsItems = 12;
+const newsPageSize = 12;
 
 export async function loadRemoteContent(newsContainer, carousel) {
-  const [contentResult, postsResult] = await Promise.all([
-    fetchJson("/api/content", "Falha ao carregar conteúdo remoto:", { news: [], carousel: [] }),
-    fetchJson("/api/posts", "Falha ao carregar publicações:", [])
+  const [contentResult] = await Promise.all([
+    fetchJson("/api/content", "Falha ao carregar conteúdo remoto:", { carousel: [] }),
+    loadNewsPage(newsContainer, 0)
   ]);
-  const news = contentResult.news || [];
-  const posts = Array.isArray(postsResult) ? postsResult : [];
-  const items = [
-    ...news.map((item) => ({ date: item.criado_em || item.criadoEm, card: createNewsCard(item) })),
-    ...posts.map((item) => ({ date: item.criadoEm, card: createPostCard(item) }))
-  ];
-
-  items.sort((first, second) => new Date(second.date).getTime() - new Date(first.date).getTime());
-  newsContainer.replaceChildren(...items.slice(0, maximumNewsItems).map((item) => item.card));
-
   const remoteCarousel = contentResult.carousel || [];
   if (remoteCarousel.length) {
     carousel.append(...remoteCarousel.map(createSlide));
     syncCarouselIndicators(carousel);
   }
+
+  const previousButton = document.getElementById("news-previous");
+  const nextButton = document.getElementById("news-next");
+  previousButton.addEventListener("click", () => {
+    const card = newsContainer.querySelector(".news-card");
+    const gap = Number.parseFloat(getComputedStyle(newsContainer).columnGap) || 0;
+    newsContainer.scrollBy({ left: -((card?.getBoundingClientRect().width || newsContainer.clientWidth * 0.8) + gap), behavior: "smooth" });
+  });
+  nextButton.addEventListener("click", async () => {
+    if (newsContainer.scrollLeft + newsContainer.clientWidth >= newsContainer.scrollWidth - 80) {
+      await loadNextNewsPage(newsContainer);
+    }
+    const card = newsContainer.querySelector(".news-card");
+    const gap = Number.parseFloat(getComputedStyle(newsContainer).columnGap) || 0;
+    newsContainer.scrollBy({ left: (card?.getBoundingClientRect().width || newsContainer.clientWidth * 0.8) + gap, behavior: "smooth" });
+  });
+  newsContainer.addEventListener("scroll", updateNewsControls, { passive: true });
+  updateNewsControls();
+}
+
+let nextNewsOffset = 0;
+let hasMoreNews = true;
+let loadingNewsPage = null;
+
+async function loadNewsPage(newsContainer, offset) {
+  const response = await fetchJson(
+    `/api/newsfeed?offset=${offset}`,
+    "Falha ao carregar notícias:",
+    { items: [], hasMore: false }
+  );
+  newsContainer.append(...response.items.map(createFeedCard));
+  nextNewsOffset = offset + response.items.length;
+  hasMoreNews = response.hasMore;
+  const count = document.getElementById("news-count");
+  count.textContent = `${nextNewsOffset} notícia${nextNewsOffset === 1 ? "" : "s"} carregada${nextNewsOffset === 1 ? "" : "s"}`;
+  updateNewsControls();
+}
+
+async function loadNextNewsPage(newsContainer) {
+  if (!hasMoreNews || loadingNewsPage) return loadingNewsPage;
+  loadingNewsPage = loadNewsPage(newsContainer, nextNewsOffset)
+    .finally(() => { loadingNewsPage = null; });
+  return loadingNewsPage;
+}
+
+function updateNewsControls() {
+  const newsContainer = document.getElementById("news-container");
+  const previousButton = document.getElementById("news-previous");
+  const nextButton = document.getElementById("news-next");
+  if (!newsContainer || !previousButton || !nextButton) return;
+  previousButton.disabled = newsContainer.scrollLeft <= 0;
+  nextButton.disabled = !hasMoreNews &&
+    newsContainer.scrollLeft + newsContainer.clientWidth >= newsContainer.scrollWidth - 2;
 }
 
 async function fetchJson(url, errorMessage, fallback) {
@@ -31,6 +74,17 @@ async function fetchJson(url, errorMessage, fallback) {
     console.error(errorMessage, error);
     return fallback;
   }
+}
+
+function createFeedCard(item) {
+  if (item.tipo === "post") {
+    return createPostCard({
+      ...item,
+      imagemUrl: item.capaUrl,
+      resumo: item.texto
+    });
+  }
+  return createNewsCard(item);
 }
 
 function createPostCard(post) {
