@@ -1248,6 +1248,45 @@ footer {
     content: "Nenhum item publicado ainda.";
 }
 
+.admin-recruitment-list {
+    display: grid;
+    gap: 0.75rem;
+}
+
+.admin-recruitment-list:empty::after {
+    color: var(--cor-texto-secundario);
+    content: "Nenhum alistamento recebido ainda.";
+}
+
+.admin-recruitment-item {
+    background: #181818;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 1rem;
+}
+
+.admin-recruitment-item h3 {
+    color: var(--cor-texto-principal);
+    margin-bottom: 0.75rem;
+}
+
+.admin-recruitment-item dl {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+}
+
+.admin-recruitment-item dt {
+    color: var(--cor-primaria);
+    font-weight: 700;
+}
+
+.admin-recruitment-item dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
 .admin-list-item {
     align-items: center;
     background: #181818;

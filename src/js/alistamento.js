@@ -23,7 +23,7 @@ if (form && message) {
       showMessage("Não foi possível enviar agora. Tente novamente mais tarde.", true);
     } finally {
       submitButton.disabled = false;
-      submitButton.textContent = "Enviar Alistamento";
+      submitButton.textContent = "Aliste-se no Covil";
     }
   });
 }
