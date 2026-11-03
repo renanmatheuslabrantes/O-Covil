@@ -1,10 +1,13 @@
 const newsPageSize = 12;
 
 export async function loadRemoteContent(newsContainer, carousel) {
-  const [contentResult] = await Promise.all([
+  const [contentResult, firstNewsPage] = await Promise.all([
     fetchJson("/api/content", "Falha ao carregar conteúdo remoto:", { carousel: [] }),
-    loadNewsPage(newsContainer, 0)
+    fetchNewsPage(0)
   ]);
+  newsPages = [firstNewsPage];
+  renderNewsPage(newsContainer, newsPages[0], false);
+
   const remoteCarousel = contentResult.carousel || [];
   if (remoteCarousel.length) {
     carousel.append(...remoteCarousel.map(createSlide));
@@ -14,55 +17,72 @@ export async function loadRemoteContent(newsContainer, carousel) {
   const previousButton = document.getElementById("news-previous");
   const nextButton = document.getElementById("news-next");
   previousButton.addEventListener("click", () => {
-    const card = newsContainer.querySelector(".news-card");
-    const gap = Number.parseFloat(getComputedStyle(newsContainer).columnGap) || 0;
-    newsContainer.scrollBy({ left: -((card?.getBoundingClientRect().width || newsContainer.clientWidth * 0.8) + gap), behavior: "smooth" });
+    changeNewsPage(newsContainer, currentNewsPage - 1);
   });
-  nextButton.addEventListener("click", async () => {
-    if (newsContainer.scrollLeft + newsContainer.clientWidth >= newsContainer.scrollWidth - 80) {
-      await loadNextNewsPage(newsContainer);
-    }
-    const card = newsContainer.querySelector(".news-card");
-    const gap = Number.parseFloat(getComputedStyle(newsContainer).columnGap) || 0;
-    newsContainer.scrollBy({ left: (card?.getBoundingClientRect().width || newsContainer.clientWidth * 0.8) + gap, behavior: "smooth" });
+  nextButton.addEventListener("click", () => {
+    changeNewsPage(newsContainer, currentNewsPage + 1);
   });
-  newsContainer.addEventListener("scroll", updateNewsControls, { passive: true });
   updateNewsControls();
 }
 
-let nextNewsOffset = 0;
-let hasMoreNews = true;
-let loadingNewsPage = null;
+let newsPages = [];
+let currentNewsPage = 0;
+let changingNewsPage = false;
 
-async function loadNewsPage(newsContainer, offset) {
+async function fetchNewsPage(pageNumber) {
   const response = await fetchJson(
-    `/api/posts?feed=1&offset=${offset}`,
+    `/api/posts?feed=1&offset=${pageNumber * newsPageSize}`,
     "Falha ao carregar notícias:",
     { items: [], hasMore: false }
   );
-  newsContainer.append(...response.items.map(createFeedCard));
-  nextNewsOffset = offset + response.items.length;
-  hasMoreNews = response.hasMore;
-  const count = document.getElementById("news-count");
-  count.textContent = `${nextNewsOffset} notícia${nextNewsOffset === 1 ? "" : "s"} carregada${nextNewsOffset === 1 ? "" : "s"}`;
+  return response;
+}
+
+async function changeNewsPage(newsContainer, pageNumber) {
+  if (changingNewsPage || pageNumber < 0) return;
+  if (pageNumber > currentNewsPage && !newsPages[currentNewsPage]?.hasMore) return;
+
+  changingNewsPage = true;
+  updateNewsControls();
+  let page = newsPages[pageNumber];
+  if (!page) {
+    page = await fetchNewsPage(pageNumber);
+    newsPages[pageNumber] = page;
+  }
+
+  const direction = pageNumber > currentNewsPage ? "forward" : "backward";
+  newsContainer.classList.add("news-page-changing", `news-page-${direction}`);
+  await new Promise((resolve) => setTimeout(resolve, 180));
+  currentNewsPage = pageNumber;
+  renderNewsPage(newsContainer, page, true);
+  newsContainer.scrollTop = 0;
+  requestAnimationFrame(() => {
+    newsContainer.classList.remove("news-page-changing", `news-page-${direction}`);
+  });
+  await new Promise((resolve) => setTimeout(resolve, 180));
+  changingNewsPage = false;
   updateNewsControls();
 }
 
-async function loadNextNewsPage(newsContainer) {
-  if (!hasMoreNews || loadingNewsPage) return loadingNewsPage;
-  loadingNewsPage = loadNewsPage(newsContainer, nextNewsOffset)
-    .finally(() => { loadingNewsPage = null; });
-  return loadingNewsPage;
+function renderNewsPage(newsContainer, page, transition) {
+  newsContainer.replaceChildren(...page.items.map(createFeedCard));
+  if (!transition) newsContainer.classList.remove("news-page-changing");
+  const count = document.getElementById("news-count");
+  const firstItem = pageNumberStart(currentNewsPage);
+  const lastItem = firstItem + page.items.length;
+  count.textContent = `Página ${currentNewsPage + 1} · notícias ${firstItem}–${lastItem}`;
 }
 
 function updateNewsControls() {
-  const newsContainer = document.getElementById("news-container");
   const previousButton = document.getElementById("news-previous");
   const nextButton = document.getElementById("news-next");
-  if (!newsContainer || !previousButton || !nextButton) return;
-  previousButton.disabled = newsContainer.scrollLeft <= 0;
-  nextButton.disabled = !hasMoreNews &&
-    newsContainer.scrollLeft + newsContainer.clientWidth >= newsContainer.scrollWidth - 2;
+  if (!previousButton || !nextButton) return;
+  previousButton.disabled = changingNewsPage || currentNewsPage === 0;
+  nextButton.disabled = changingNewsPage || !newsPages[currentNewsPage]?.hasMore;
+}
+
+function pageNumberStart(pageNumber) {
+  return pageNumber * newsPageSize + 1;
 }
 
 async function fetchJson(url, errorMessage, fallback) {
