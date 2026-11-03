@@ -700,6 +700,16 @@ nav a:hover {
     margin: 0 auto;
     text-align: center;
     font-size: 1.1rem;
+    color: #fff;
+    font-weight: 600;
+    -webkit-text-stroke: 0.35px #000;
+    text-shadow: 0 1px 4px #000;
+}
+
+#sobre h2 {
+    -webkit-text-stroke: 1.5px #000;
+    paint-order: stroke fill;
+    text-shadow: 0 2px 6px #000;
 }
 
 /* --- Grade de Notícias --- */
@@ -1005,8 +1015,10 @@ footer {
 
 .copyright {
     margin-top: 1rem;
-    font-size: 0.9rem;
-    color: #666;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    text-shadow: 0 1px 4px #000;
 }
 
 /* --- Animações --- */
