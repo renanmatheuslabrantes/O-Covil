@@ -711,6 +711,65 @@ nav a:hover {
     gap: 2rem; /* Espaço entre os cards. */
 }
 
+.news-carousel-controls {
+    align-items: center;
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin: -1rem 0 1.5rem;
+}
+
+.news-carousel-button {
+    align-items: center;
+    background: var(--cor-fundo-escuro);
+    border: 1px solid var(--cor-primaria);
+    border-radius: 50%;
+    color: var(--cor-primaria);
+    cursor: pointer;
+    display: inline-flex;
+    font-size: 1.75rem;
+    height: 2.75rem;
+    justify-content: center;
+    line-height: 1;
+    width: 2.75rem;
+}
+
+.news-carousel-button:disabled {
+    cursor: default;
+    opacity: 0.4;
+}
+
+.news-carousel-status {
+    color: var(--cor-texto-secundario);
+    font-size: 0.9rem;
+    margin: 0;
+    min-width: 10rem;
+    text-align: center;
+}
+
+.news-carousel-viewport {
+    overflow: hidden;
+}
+
+.news-grid.news-carousel {
+    display: flex;
+    gap: 2rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+}
+
+.news-grid.news-carousel::-webkit-scrollbar {
+    display: none;
+}
+
+.news-carousel .news-card {
+    flex: 0 0 min(340px, 85%);
+    scroll-snap-align: start;
+}
+
 .news-card {
     background-color: var(--cor-fundo-escuro);
     border: 1px solid rgba(200, 155, 60, 0.2);

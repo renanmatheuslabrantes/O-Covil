@@ -1,6 +1,8 @@
 import { sql } from "./_lib/db.js";
 import { toPublicPost } from "./_lib/post-content.js";
 
+const newsPageSize = 12;
+
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Método não permitido." });
@@ -9,6 +11,38 @@ export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
 
   try {
+    if (req.query.feed !== undefined) {
+      const offset = Number(req.query.offset || 0);
+      if (!Number.isSafeInteger(offset) || offset < 0 || offset > 1000000) {
+        return res.status(400).json({ error: "Página inválida." });
+      }
+
+      const items = await sql`
+        select * from (
+          select id, 'post'::text as tipo, titulo, resumo as texto, ''::text as link,
+            imagem_url as capa_url, criado_em
+          from posts
+          union all
+          select id, 'news'::text as tipo, titulo, texto, link, capa_url, criado_em
+          from news
+          where criado_em > now() - interval '30 days'
+        ) as feed
+        order by criado_em desc, tipo asc, id desc
+        limit ${newsPageSize + 1} offset ${offset}
+      `;
+      const hasMore = items.length > newsPageSize;
+      const page = items.slice(0, newsPageSize);
+
+      return res.status(200).json({
+        items: page.map((item) => ({
+          ...item,
+          capaUrl: item.capa_url,
+          criadoEm: item.criado_em
+        })),
+        hasMore
+      });
+    }
+
     if (req.query.id !== undefined) {
       const id = Number(req.query.id);
       if (!Number.isSafeInteger(id) || id < 1) {
