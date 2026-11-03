@@ -256,13 +256,20 @@
 .alistamento-form input,
 .alistamento-form textarea {
     background: #181818;
-    color: var(--cor-texto-principal);
+    color: #2a1e10;
     border: 1px solid #333;
     border-radius: 8px;
     padding: 0.7rem 1rem;
     font-size: 1rem;
     font-family: var(--fonte-corpo);
+    font-weight: 600;
     resize: none;
+}
+
+.alistamento-form input::placeholder,
+.alistamento-form textarea::placeholder {
+    color: #6b5a44;
+    opacity: 1;
 }
 
 .alistamento-form input:focus,
