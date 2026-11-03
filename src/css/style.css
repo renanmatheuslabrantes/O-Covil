@@ -610,15 +610,100 @@ nav a:hover {
 .hero-content {
     position: relative;
     z-index: 3; /* Na frente da sobreposição e das partículas */
-    animation: fadeIn 1.5s ease-in-out;
+    padding: 0 1rem;
+    text-align: center;
 }
 
 .main-title {
     font-family: var(--fonte-titulos);
-    font-size: 5rem; /* Tamanho de fonte grande para impacto. */
-    color: white;
-    text-shadow: 0 0 15px rgba(0, 0, 0, 0.8); /* Sombra no texto para destacá-lo do fundo. */
-    margin-bottom: 1rem;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    color: var(--cor-primaria);
+    text-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+    margin-bottom: 0.75rem;
+}
+
+.hero-title-letter {
+    display: inline-block;
+    opacity: 0;
+    text-shadow:
+        0 0 4px #fff3a6,
+        0 -3px 8px #ffd04a,
+        0 -8px 14px #ff8c1a,
+        0 -13px 22px rgba(255, 54, 0, 0.75);
+    animation:
+        hero-letter-reveal 0.65s ease-out forwards,
+        flame-flicker 1.8s ease-in-out infinite alternate;
+}
+
+.hero-title-letter:nth-of-type(1) { animation-delay: 0.15s; }
+.hero-title-letter:nth-of-type(3) { animation-delay: 0.35s; }
+.hero-title-letter:nth-of-type(4) { animation-delay: 0.5s; }
+.hero-title-letter:nth-of-type(5) { animation-delay: 0.65s; }
+.hero-title-letter:nth-of-type(6) { animation-delay: 0.8s; }
+.hero-title-letter:nth-of-type(7) { animation-delay: 0.95s; }
+
+.hero-title-space {
+    display: inline-block;
+    width: 0.3em;
+}
+
+.hero-game-type {
+    margin: 0;
+    color: var(--cor-primaria);
+    font-size: clamp(1.25rem, 3vw, 2rem);
+    font-weight: 700;
+    letter-spacing: 0.35em;
+    text-shadow:
+        0 0 4px #fff3a6,
+        0 -3px 8px #ffd04a,
+        0 -8px 14px #ff8c1a,
+        0 -13px 22px rgba(255, 54, 0, 0.75);
+    opacity: 0;
+    animation:
+        fadeIn 1s ease-out 1.4s forwards,
+        flame-flicker 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes hero-letter-reveal {
+    from {
+        opacity: 0;
+        transform: translateY(0.35em);
+        filter: blur(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+    }
+}
+
+@keyframes flame-flicker {
+    from {
+        text-shadow:
+            0 0 4px #fff3a6,
+            0 -3px 8px #ffd04a,
+            0 -8px 14px #ff8c1a,
+            0 -13px 22px rgba(255, 54, 0, 0.75);
+    }
+
+    to {
+        text-shadow:
+            0 0 6px #fff8cc,
+            0 -4px 10px #ffe16b,
+            1px -10px 18px #ff7517,
+            -1px -16px 26px rgba(255, 38, 0, 0.85);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-title-letter,
+    .hero-game-type {
+        opacity: 1;
+        animation: none;
+        filter: none;
+        transform: none;
+    }
 }
 
 .subtitle {
