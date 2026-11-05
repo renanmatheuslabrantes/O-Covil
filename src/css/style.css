@@ -1126,20 +1126,71 @@ footer {
         display: none; /* Esconde a navegação e o botão em telas menores. */
     }
     .menu-toggle {
-        display: block; /* Mostra o menu hamburguer. */
+        display: flex;
+        width: 44px;
+        height: 44px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border-radius: 6px;
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .menu-toggle[aria-expanded="true"] .bar:first-child {
+        transform: translateY(8px) rotate(45deg);
+    }
+
+    .menu-toggle[aria-expanded="true"] .bar:nth-child(2) {
+        opacity: 0;
+    }
+
+    .menu-toggle[aria-expanded="true"] .bar:last-child {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+
+    .nav-links.is-open {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        display: block;
+        width: 100%;
+        padding: 0.5rem 5%;
+        background: rgba(10, 10, 10, 0.97);
+        border-bottom: 1px solid rgba(200, 155, 60, 0.35);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(10px);
+    }
+
+    .nav-links.is-open ul {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .nav-links.is-open a {
+        display: block;
+        padding: 0.9rem 0;
+    }
+
+    .nav-links.is-open li + li {
+        border-top: 1px solid rgba(200, 155, 60, 0.16);
     }
 }
 
 /* Para telas de celular */
 @media (max-width: 768px) {
     .main-title {
-        font-size: 3.5rem; /* Diminui a fonte do título principal. */
+        font-size: clamp(2.25rem, 11vw, 3.5rem);
     }
     .subtitle {
         font-size: 1.2rem;
     }
     .content-section h2 {
         font-size: 2.5rem;
+    }
+    #sobre {
+        background-position: 64% center !important;
     }
 }
 
