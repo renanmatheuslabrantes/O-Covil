@@ -499,6 +499,10 @@ header {
     transition: background-color 0.3s ease; /* Animação suave para a cor de fundo. */
 }
 
+body.post-page > header {
+    position: sticky;
+}
+
 .header-container {
     display: flex; /* Ativa o layout flexbox, que alinha os itens em uma linha. */
     justify-content: space-between; /* Distribui os itens: o primeiro no início, o último no fim, e o resto no meio. */
@@ -996,7 +1000,10 @@ nav a:hover {
     font-size: 2.2rem;
     line-height: 1.25;
     margin-bottom: 12px;
+    max-width: 100%;
     overflow-wrap: anywhere;
+    text-overflow: clip;
+    white-space: normal;
 }
 
 .post-detail time {
@@ -1095,12 +1102,13 @@ nav a:hover {
 
 @media (max-width: 700px) {
     .post-detail {
-        margin: 96px 12px 24px;
+        margin: 24px 12px;
         padding: 24px 18px;
     }
 
     .post-detail h1 {
-        font-size: clamp(1.35rem, 6vw, 1.7rem);
+        font-size: clamp(1.25rem, 5vw, 1.55rem);
+        line-height: 1.3;
     }
 
     .post-detail img {
