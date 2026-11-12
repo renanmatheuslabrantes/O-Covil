@@ -625,14 +625,26 @@ nav a:hover {
 .hero-title-letter {
     display: inline-block;
     opacity: 0;
+    color: transparent;
+    background: linear-gradient(
+        180deg,
+        #fffdf3 0%,
+        #aeb4b6 18%,
+        #3b4144 42%,
+        #d8d5c9 54%,
+        #51453c 76%,
+        #d3b88a 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
     text-shadow:
-        0 0 4px #fff3a6,
-        0 -3px 8px #ffd04a,
-        0 -8px 14px #ff8c1a,
-        0 -13px 22px rgba(255, 54, 0, 0.75);
+        0 1px 0 rgba(255, 248, 224, 0.55),
+        0 3px 0 #292522,
+        0 5px 8px rgba(0, 0, 0, 0.9),
+        0 0 7px rgba(255, 102, 24, 0.38);
     animation:
         hero-letter-reveal 0.65s ease-out forwards,
-        flame-flicker 1.8s ease-in-out infinite alternate;
+        forged-ember-glow 2.4s ease-in-out infinite alternate;
 }
 
 .hero-title-letter:nth-of-type(1) { animation-delay: 0.15s; }
@@ -649,19 +661,30 @@ nav a:hover {
 
 .hero-game-type {
     margin: 0;
-    color: var(--cor-primaria);
+    color: transparent;
+    background: linear-gradient(
+        180deg,
+        #fffdf3 0%,
+        #aeb4b6 18%,
+        #3b4144 42%,
+        #d8d5c9 54%,
+        #51453c 76%,
+        #d3b88a 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
     font-size: clamp(1.25rem, 3vw, 2rem);
     font-weight: 700;
     letter-spacing: 0.35em;
     text-shadow:
-        0 0 4px #fff3a6,
-        0 -3px 8px #ffd04a,
-        0 -8px 14px #ff8c1a,
-        0 -13px 22px rgba(255, 54, 0, 0.75);
+        0 1px 0 rgba(255, 248, 224, 0.55),
+        0 3px 0 #292522,
+        0 5px 8px rgba(0, 0, 0, 0.9),
+        0 0 7px rgba(255, 102, 24, 0.38);
     opacity: 0;
     animation:
         fadeIn 1s ease-out 1.4s forwards,
-        flame-flicker 1.8s ease-in-out infinite alternate;
+        forged-ember-glow 2.4s ease-in-out infinite alternate;
 }
 
 @keyframes hero-letter-reveal {
@@ -678,21 +701,22 @@ nav a:hover {
     }
 }
 
-@keyframes flame-flicker {
+@keyframes forged-ember-glow {
     from {
         text-shadow:
-            0 0 4px #fff3a6,
-            0 -3px 8px #ffd04a,
-            0 -8px 14px #ff8c1a,
-            0 -13px 22px rgba(255, 54, 0, 0.75);
+            0 1px 0 rgba(255, 248, 224, 0.55),
+            0 3px 0 #292522,
+            0 5px 8px rgba(0, 0, 0, 0.9),
+            0 0 7px rgba(255, 102, 24, 0.38);
     }
 
     to {
         text-shadow:
-            0 0 6px #fff8cc,
-            0 -4px 10px #ffe16b,
-            1px -10px 18px #ff7517,
-            -1px -16px 26px rgba(255, 38, 0, 0.85);
+            0 1px 0 rgba(255, 255, 244, 0.7),
+            0 3px 0 #292522,
+            0 5px 8px rgba(0, 0, 0, 0.9),
+            0 0 10px rgba(255, 126, 28, 0.72),
+            0 0 20px rgba(210, 54, 16, 0.4);
     }
 }
 
@@ -903,6 +927,7 @@ nav a:hover {
 .card-content h3 {
     font-family: var(--fonte-titulos);
     color: var(--cor-primaria);
+    overflow-wrap: anywhere;
     margin-bottom: 0.5rem;
 }
 
@@ -969,7 +994,9 @@ nav a:hover {
     color: var(--cor-primaria);
     font-family: var(--fonte-titulos);
     font-size: 2.2rem;
+    line-height: 1.25;
     margin-bottom: 12px;
+    overflow-wrap: anywhere;
 }
 
 .post-detail time {
@@ -1068,12 +1095,12 @@ nav a:hover {
 
 @media (max-width: 700px) {
     .post-detail {
-        margin: 24px 12px;
+        margin: 96px 12px 24px;
         padding: 24px 18px;
     }
 
     .post-detail h1 {
-        font-size: 1.7rem;
+        font-size: clamp(1.35rem, 6vw, 1.7rem);
     }
 
     .post-detail img {
