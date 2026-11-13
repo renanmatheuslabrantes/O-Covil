@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     if (req.method === "POST") {
       const { titulo, resumo, conteudo, imagemUrl } = req.body || {};
       const preparedContent = preparePostContent(conteudo);
-      if (!isValidText(titulo, 120) || !isValidText(resumo, 280) || !preparedContent || !isValidImageUrl(imagemUrl)) {
+      if (!isValidText(titulo, 240) || !isValidText(resumo, 280) || !preparedContent || !isValidImageUrl(imagemUrl)) {
         return res.status(400).json({ error: "Informe título, descrição, conteúdo e uma imagem válida." });
       }
 

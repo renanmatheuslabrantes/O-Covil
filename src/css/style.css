@@ -932,6 +932,7 @@ nav a:hover {
     font-family: var(--fonte-titulos);
     color: var(--cor-primaria);
     overflow-wrap: anywhere;
+    hyphens: auto;
     margin-bottom: 0.5rem;
 }
 
@@ -1004,6 +1005,7 @@ nav a:hover {
     overflow-wrap: anywhere;
     text-overflow: clip;
     white-space: normal;
+    hyphens: auto;
 }
 
 .post-detail time {
