@@ -1,7 +1,7 @@
 import sanitizeHtml from "sanitize-html";
 
 const richContentPrefix = "rich-html-v1:";
-const allowedTags = ["p", "br", "strong", "b", "em", "i", "u", "ul", "ol", "li", "blockquote", "a"];
+const allowedTags = ["p", "br", "h2", "h3", "strong", "b", "em", "i", "u", "ul", "ol", "li", "blockquote", "a"];
 const richContentOptions = {
   allowedTags,
   allowedAttributes: { a: ["href"] },
