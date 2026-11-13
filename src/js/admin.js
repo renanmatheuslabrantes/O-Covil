@@ -14,6 +14,12 @@ const postEditor = document.getElementById("post-content");
 const postEditorToolbar = document.getElementById("post-editor-toolbar");
 const postContentValue = document.getElementById("post-content-value");
 const postContentCount = document.getElementById("post-content-count");
+const postTitle = document.getElementById("post-title");
+const postTitleCount = document.getElementById("post-title-count");
+const postSummary = document.getElementById("post-summary");
+const postSummaryCount = document.getElementById("post-summary-count");
+const carouselCaption = document.getElementById("carousel-caption");
+const carouselCaptionCount = document.getElementById("carousel-caption-count");
 const profileForm = document.getElementById("profile-form");
 const profileAvatarPreview = document.getElementById("profile-avatar-preview");
 const accountsPanel = document.getElementById("accounts-panel");
@@ -44,6 +50,12 @@ postEditorToolbar.addEventListener("click", (event) => {
 });
 
 postEditor.addEventListener("input", updatePostContentCount);
+postTitle.addEventListener("input", () => updateCharacterCount(postTitle, postTitleCount));
+postSummary.addEventListener("input", () => updateCharacterCount(postSummary, postSummaryCount));
+carouselCaption.addEventListener("input", () => updateCharacterCount(carouselCaption, carouselCaptionCount));
+updateCharacterCount(postTitle, postTitleCount);
+updateCharacterCount(postSummary, postSummaryCount);
+updateCharacterCount(carouselCaption, carouselCaptionCount);
 
 checkSession();
 
@@ -166,6 +178,8 @@ document.getElementById("post-form").addEventListener("submit", async (event) =>
     form.reset();
     postEditor.replaceChildren();
     updatePostContentCount();
+    updateCharacterCount(postTitle, postTitleCount);
+    updateCharacterCount(postSummary, postSummaryCount);
     showMessage("Post publicado.");
     await loadPosts();
   } catch (error) {
@@ -189,6 +203,7 @@ document.getElementById("carousel-form").addEventListener("submit", async (event
       body: JSON.stringify({ legenda: form.legenda.value.trim(), link: form.link.value.trim(), imagemUrl: upload.url })
     });
     form.reset();
+    updateCharacterCount(carouselCaption, carouselCaptionCount);
     showMessage("Foto adicionada ao carrossel.");
     await loadContentLists();
   } catch (error) {
@@ -431,6 +446,13 @@ function updatePostContentCount() {
   const length = postEditor.innerText.replace(/\u00a0/g, " ").trim().length;
   postContentCount.textContent = `${length} / 5000`;
   postContentCount.classList.toggle("is-over-limit", length > 5000);
+}
+
+function updateCharacterCount(input, counter) {
+  const length = input.value.length;
+  const limit = input.maxLength;
+  counter.textContent = `${length} / ${limit}`;
+  counter.classList.toggle("is-over-limit", length > limit);
 }
 
 function syncPostContent() {
