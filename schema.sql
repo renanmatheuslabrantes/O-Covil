@@ -1,15 +1,17 @@
 create table if not exists news (
   id bigserial primary key,
-  titulo varchar(120) not null,
+  titulo varchar(240) not null,
   texto varchar(2000) not null,
   link text not null default '',
   capa_url text not null,
   criado_em timestamptz not null default now()
 );
 
+alter table news alter column titulo type varchar(240);
+
 create table if not exists posts (
   id bigserial primary key,
-  titulo varchar(120) not null,
+  titulo varchar(240) not null,
   resumo varchar(280) not null default '',
   conteudo text not null,
   imagem_url text not null,
@@ -17,6 +19,7 @@ create table if not exists posts (
   criado_em timestamptz not null default now()
 );
 
+alter table posts alter column titulo type varchar(240);
 alter table posts add column if not exists author_login text;
 alter table posts add column if not exists resumo varchar(280) not null default '';
 alter table posts add column if not exists visualizacoes bigint not null default 0;

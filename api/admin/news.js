@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     }
     if (req.method === "POST") {
       const { titulo, texto, link, capaUrl } = req.body || {};
-      if (!isValidText(titulo, 1, 120) || !isValidText(texto, 1, 2000) || !isValidText(capaUrl, 1, 2048) || !isValidOptionalUrl(link)) {
+      if (!isValidText(titulo, 1, 240) || !isValidText(texto, 1, 2000) || !isValidText(capaUrl, 1, 2048) || !isValidOptionalUrl(link)) {
         return res.status(400).json({ error: "Dados da notícia inválidos." });
       }
       const [item] = await sql`insert into news (titulo, texto, link, capa_url) values (${titulo.trim()}, ${texto.trim()}, ${link?.trim() || ""}, ${capaUrl}) returning id, titulo, texto, link, capa_url`;
