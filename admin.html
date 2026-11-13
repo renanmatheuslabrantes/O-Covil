@@ -38,8 +38,10 @@
                     <form id="post-form" class="admin-form">
                         <label for="post-title">Título</label>
                         <input id="post-title" name="titulo" maxlength="240" required>
+                        <div id="post-title-count" class="rich-text-count" aria-live="polite">0 / 240</div>
                         <label for="post-summary">Descrição do card</label>
                         <textarea id="post-summary" name="resumo" rows="3" maxlength="280" placeholder="Resumo breve para exibir na página inicial" required></textarea>
+                        <div id="post-summary-count" class="rich-text-count" aria-live="polite">0 / 280</div>
                         <label id="post-content-label">Conteúdo</label>
                         <div id="post-editor-toolbar" class="rich-text-toolbar" role="toolbar" aria-label="Formatação do conteúdo">
                             <button type="button" data-editor-command="bold" aria-label="Negrito" title="Negrito"><strong>B</strong></button>
@@ -63,6 +65,7 @@
                     <form id="carousel-form" class="admin-form">
                         <label for="carousel-caption">Legenda (opcional)</label>
                         <input id="carousel-caption" name="legenda" maxlength="160">
+                        <div id="carousel-caption-count" class="rich-text-count" aria-live="polite">0 / 160</div>
                         <label for="carousel-link">Link ao clicar (opcional)</label>
                         <input id="carousel-link" name="link" type="url" placeholder="https://...">
                         <label for="carousel-image">Imagem (JPG, PNG, WebP ou GIF; até 5 MB)</label>
