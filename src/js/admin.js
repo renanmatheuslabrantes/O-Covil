@@ -444,8 +444,8 @@ function showMessage(text, isError = false) {
 
 function updatePostContentCount() {
   const length = postEditor.innerText.replace(/\u00a0/g, " ").trim().length;
-  postContentCount.textContent = `${length} / 5000`;
-  postContentCount.classList.toggle("is-over-limit", length > 5000);
+  postContentCount.textContent = `${length} / 10000`;
+  postContentCount.classList.toggle("is-over-limit", length > 10000);
 }
 
 function updateCharacterCount(input, counter) {
@@ -457,8 +457,8 @@ function updateCharacterCount(input, counter) {
 
 function syncPostContent() {
   const text = postEditor.innerText.replace(/\u00a0/g, " ").trim();
-  if (!text || text.length > 5000) {
-    showMessage(text ? "O conteúdo deve ter no máximo 5000 caracteres." : "Escreva o conteúdo da publicação.", true);
+  if (!text || text.length > 10000) {
+    showMessage(text ? "O conteúdo deve ter no máximo 10000 caracteres." : "Escreva o conteúdo da publicação.", true);
     postEditor.focus();
     return false;
   }
