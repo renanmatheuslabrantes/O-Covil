@@ -15,7 +15,7 @@ export function preparePostContent(value) {
 
   const html = sanitizeHtml(value, richContentOptions);
   const text = sanitizeHtml(html, plainTextOptions).replace(/\u00a0/g, " ").trim();
-  if (!text || text.length > 5000) return null;
+  if (!text || text.length > 10000) return null;
 
   return { stored: `${richContentPrefix}${html}` };
 }
