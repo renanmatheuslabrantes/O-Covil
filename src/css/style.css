@@ -1039,6 +1039,22 @@ nav a:hover {
     overflow-wrap: anywhere;
 }
 
+.post-detail-content h2,
+.post-detail-content h3 {
+    color: var(--cor-primaria);
+    font-family: var(--fonte-titulos);
+    line-height: 1.35;
+    margin: 1.5rem 0 0.65rem;
+}
+
+.post-detail-content h2 {
+    font-size: 1.5em;
+}
+
+.post-detail-content h3 {
+    font-size: 1.2em;
+}
+
 .post-author-signature {
     align-items: center;
     border-top: 1px solid rgba(200, 155, 60, 0.25);
@@ -1363,6 +1379,22 @@ footer {
 
 .rich-text-editor p {
     margin: 0 0 0.75rem;
+}
+
+.rich-text-editor h2,
+.rich-text-editor h3 {
+    color: var(--cor-primaria);
+    font-family: var(--fonte-titulos);
+    line-height: 1.35;
+    margin: 1rem 0 0.5rem;
+}
+
+.rich-text-editor h2 {
+    font-size: 1.4em;
+}
+
+.rich-text-editor h3 {
+    font-size: 1.15em;
 }
 
 .rich-text-editor ul,

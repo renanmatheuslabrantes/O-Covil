@@ -45,7 +45,7 @@ postEditorToolbar.addEventListener("click", (event) => {
   }
 
   postEditor.focus();
-  document.execCommand(button.dataset.editorCommand, false);
+  document.execCommand(button.dataset.editorCommand, false, button.dataset.editorValue || null);
   updatePostContentCount();
 });
 
