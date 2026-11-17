@@ -119,15 +119,11 @@
     color: var(--cor-primaria);
     text-align: center;
 }
-.carousel-indicators {
-    display: none !important;
-}
 .carousel-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 500px;
+    display: block;
+    min-height: 0;
+    background: #080808;
+    padding: 0;
 }
 
 .carousel-section[hidden] {
@@ -331,64 +327,116 @@
     }
 }
 /* ===================== */
-/* CARROSSEL */
+/* CARROSSEL DE DESTAQUES */
 .hero-carousel {
     position: relative;
-    text-align: center;
-    color: white;
-    max-width: 1200px;
+    display: block;
+    flex: none;
+    max-width: none;
+    margin: 0;
     width: 100%;
-    margin: 0 auto;
+    height: clamp(440px, 56.25vw, 780px);
+    overflow: hidden;
+    isolation: isolate;
+    background: #080808;
+    color: #fff;
+    text-align: left;
 }
 
-/* Cada slide */
 .slide {
     display: none;
-    animation: fade 1s ease-in-out;
-    min-height: 430px;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
+    min-height: 0;
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    flex: none;
+    animation: fade 0.7s ease-in-out;
 }
 
-/* Slide ativo */
 .slide.active {
     display: block;
 }
 
-/* Imagens */
-.slide img {
+.slide > img,
+.slide-link,
+.slide-link img {
+    display: block;
+    position: absolute;
+    inset: 0;
     width: 100%;
-    max-width: 100%;
-    height: 400px;
+    height: 100%;
+}
+
+.slide > img,
+.slide-link img {
     object-fit: cover;
-    border-radius: 12px;
-    margin-bottom: 15px;
 }
 
-/* Vídeos */
-.slide video {
-    width: 100%;
-    max-height: 400px;
-    border-radius: 12px;
-    margin-bottom: 15px;
+.slide-link {
+    z-index: 0;
 }
 
-/* Animação */
+.slide::after {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    background:
+        linear-gradient(90deg, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.34) 56%, rgba(0, 0, 0, 0.04)),
+        linear-gradient(0deg, rgba(0, 0, 0, 0.55), transparent 58%);
+    content: "";
+    pointer-events: none;
+}
+
+.slide-content {
+    position: absolute;
+    z-index: 2;
+    bottom: clamp(76px, 10%, 104px);
+    left: clamp(24px, 9vw, 136px);
+    max-width: min(660px, 72%);
+}
+
+.slide-caption {
+    color: #fff;
+    font-family: var(--fonte-titulos);
+    font-size: clamp(2rem, 5vw, 4.5rem);
+    line-height: 1.12;
+    margin: 0 0 1.5rem;
+    overflow-wrap: anywhere;
+    text-shadow: 0 3px 16px rgba(0, 0, 0, 0.85);
+}
+
+.slide-cta {
+    align-items: center;
+    border: 1px solid var(--cor-primaria);
+    color: #fff;
+    display: inline-flex;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    min-height: 48px;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.slide-cta:hover,
+.slide-cta:focus-visible {
+    background: var(--cor-primaria);
+    color: #111;
+    outline: none;
+}
+
 @keyframes fade {
     from { opacity: 0; }
     to { opacity: 1; }
 }
 
-/* Botões */
-.hero-carousel {
-    position: relative;
-    /* ...demais regras já existentes... */
-}
-
 .carousel-controls {
     position: absolute;
+    z-index: 3;
     top: 50%;
+    right: 0;
     left: 0;
     width: 100%;
     display: flex;
@@ -396,54 +444,112 @@
     align-items: center;
     transform: translateY(-50%);
     pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s;
-    z-index: 3;
-}
-
-.hero-carousel:hover .carousel-controls {
-    opacity: 1;
-    pointer-events: all;
+    padding: 0 clamp(12px, 3vw, 42px);
 }
 
 .carousel-controls button {
-    background: rgba(0,0,0,0.5);
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 2rem;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.52);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    border-radius: 50%;
+    color: #fff;
     cursor: pointer;
-    border-radius: 10px;
-    transition: background 0.3s;
-    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.25);
+    display: flex;
+    font-size: 2.25rem;
+    height: 54px;
+    justify-content: center;
+    line-height: 1;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    width: 54px;
     pointer-events: all;
 }
 
 .carousel-controls button:hover {
-    background: rgba(0,0,0,0.8);
+    background: var(--cor-primaria);
+    color: #111;
+    transform: scale(1.06);
 }
 
-/* Indicadores (bolinhas) */
 .carousel-indicators {
+    position: absolute;
+    z-index: 3;
+    right: 0;
+    bottom: 28px;
+    left: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 16px;
-    margin-top: 24px;
-    position: static;
+    gap: 10px;
 }
 
-.dot {
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.5);
+.carousel-indicator {
+    width: 34px;
+    height: 4px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: rgba(255, 255, 255, 0.48);
     cursor: pointer;
-    transition: background 0.3s;
+    transition: background-color 0.2s ease, width 0.2s ease;
 }
 
-.dot.active {
-    background: white;
+.carousel-indicator[aria-current="true"] {
+    width: 54px;
+    background: var(--cor-primaria);
+}
+
+.carousel-controls button:focus-visible,
+.carousel-indicator:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 4px;
+}
+
+@media (max-width: 640px) {
+    .hero-carousel {
+        height: clamp(420px, 112vw, 560px);
+    }
+
+    .slide > img,
+    .slide-link img {
+        object-position: center;
+    }
+
+    .slide::after {
+        background:
+            linear-gradient(0deg, rgba(0, 0, 0, 0.88), rgba(0, 0, 0, 0.08) 80%),
+            linear-gradient(90deg, rgba(0, 0, 0, 0.2), transparent);
+    }
+
+    .slide-content {
+        bottom: 76px;
+        left: 24px;
+        max-width: calc(100% - 48px);
+    }
+
+    .slide-caption {
+        font-size: clamp(1.8rem, 8vw, 2.8rem);
+        margin-bottom: 1rem;
+    }
+
+    .carousel-controls {
+        padding: 0 10px;
+    }
+
+    .carousel-controls button {
+        width: 42px;
+        height: 42px;
+        font-size: 1.75rem;
+    }
+
+    .carousel-indicators {
+        bottom: 20px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .slide {
+        animation: none;
+    }
 }
 /* --- Variáveis e Configurações Globais --- */
         
