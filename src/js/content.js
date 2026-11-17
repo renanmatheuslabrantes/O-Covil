@@ -14,6 +14,19 @@ export async function loadRemoteContent(newsContainer, carousel) {
     syncCarouselIndicators(carousel);
   }
 
+  if (contentResult.heroVideoUrl) {
+    const heroVideo = document.getElementById("hero-video");
+    const fallbackToExistingVideo = () => {
+      heroVideo.removeEventListener("error", fallbackToExistingVideo);
+      heroVideo.removeAttribute("src");
+      heroVideo.load();
+      console.error("O vídeo enviado não pôde ser reproduzido; usando a fonte padrão.");
+    };
+    heroVideo.addEventListener("error", fallbackToExistingVideo, { once: true });
+    heroVideo.src = contentResult.heroVideoUrl;
+    heroVideo.load();
+  }
+
   const previousButton = document.getElementById("news-previous");
   const nextButton = document.getElementById("news-next");
   previousButton.addEventListener("click", () => {

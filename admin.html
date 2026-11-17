@@ -32,6 +32,17 @@
         <section id="content-panel" hidden>
             <div id="admin-message" class="admin-message" role="status"></div>
 
+            <section id="hero-video-panel" class="admin-panel admin-list-panel" hidden>
+                <h2>Vídeo de fundo da página inicial</h2>
+                <p>Envie um vídeo MP4 (H.264) ou WebM de até 100 MB. O novo vídeo substituirá o atual após o envio.</p>
+                <form id="hero-video-form" class="admin-form">
+                    <label for="hero-video-file">Arquivo de vídeo</label>
+                    <input id="hero-video-file" name="video" type="file" accept=".mp4,.webm,video/mp4,video/webm" required>
+                    <video id="hero-video-preview" class="hero-video-preview" controls muted playsinline hidden></video>
+                    <button class="cta-button" type="submit">Atualizar vídeo de fundo</button>
+                </form>
+            </section>
+
             <div class="admin-grid">
                 <section class="admin-panel">
                     <h2>Novo post</h2>

@@ -38,6 +38,12 @@ create table if not exists carousel (
   criado_em timestamptz not null default now()
 );
 
+create table if not exists site_settings (
+  key text primary key,
+  value text not null,
+  updated_at timestamptz not null default now()
+);
+
 create table if not exists alistamentos (
   id bigserial primary key,
   nome varchar(80) not null,
