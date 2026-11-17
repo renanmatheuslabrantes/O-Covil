@@ -27,12 +27,40 @@ const accountsList = document.getElementById("accounts-list");
 const accountForm = document.getElementById("account-form");
 const accountRole = document.getElementById("account-role");
 const accountAdminOption = document.getElementById("account-admin-option");
+const heroVideoPanel = document.getElementById("hero-video-panel");
+const heroVideoForm = document.getElementById("hero-video-form");
+const heroVideoFile = document.getElementById("hero-video-file");
+const heroVideoPreview = document.getElementById("hero-video-preview");
 let currentSession = null;
 let currentProfile = null;
 let selectedAvatarPreviewUrl = null;
 
 postEditorToolbar.addEventListener("mousedown", (event) => {
   if (event.target.closest("button")) event.preventDefault();
+});
+
+heroVideoForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const file = heroVideoFile.files[0];
+  if (!validateVideo(file)) return;
+  setFormBusy(heroVideoForm, true, "Enviando vídeo...");
+
+  try {
+    const upload = await uploadFile(file, "hero", ({ percentage }) => {
+      setFormBusy(heroVideoForm, true, `Enviando vídeo... ${Math.round(percentage)}%`);
+    });
+    const setting = await request("/api/admin/hero-video", {
+      method: "PUT",
+      body: JSON.stringify({ videoUrl: upload.url })
+    });
+    renderHeroVideoPreview(setting.videoUrl);
+    heroVideoForm.reset();
+    showMessage("Vídeo de fundo atualizado.");
+  } catch (error) {
+    showMessage(error.message || "Não foi possível atualizar o vídeo de fundo.", true);
+  } finally {
+    setFormBusy(heroVideoForm, false, "Atualizar vídeo de fundo");
+  }
 });
 
 postEditorToolbar.addEventListener("click", (event) => {
@@ -81,6 +109,7 @@ loginForm.addEventListener("submit", async (event) => {
   setFormBusy(loginForm, false, "Entrar");
   showAuthenticatedArea(true, session);
   await loadProfile();
+  if (session.role === "admin") await loadHeroVideo();
   await loadContentLists();
 });
 
@@ -222,7 +251,23 @@ async function checkSession() {
     return;
   }
   await loadProfile();
+  if (currentSession?.role === "admin") await loadHeroVideo();
   await loadContentLists();
+}
+
+async function loadHeroVideo() {
+  try {
+    const setting = await request("/api/admin/hero-video");
+    renderHeroVideoPreview(setting.videoUrl);
+  } catch (error) {
+    showMessage(error.message || "Não foi possível carregar o vídeo de fundo.", true);
+  }
+}
+
+function renderHeroVideoPreview(url) {
+  heroVideoPreview.src = url || "";
+  heroVideoPreview.hidden = !url;
+  if (url) heroVideoPreview.load();
 }
 
 function showAuthenticatedArea(authenticated, session = null) {
@@ -232,6 +277,7 @@ function showAuthenticatedArea(authenticated, session = null) {
   logoutButton.hidden = !authenticated;
   const isAdmin = currentSession?.role === "admin";
   accountsPanel.hidden = !isAdmin;
+  heroVideoPanel.hidden = !isAdmin;
   document.getElementById("news-panel").hidden = !isAdmin;
   recruitmentPanel.hidden = !isAdmin;
   accountAdminOption.hidden = !currentSession?.isBootstrapAdmin;
@@ -397,15 +443,21 @@ async function removeContent(id, type) {
   }
 }
 
-async function uploadImage(file, folder) {
+async function uploadFile(file, folder, onUploadProgress) {
   const extension = file.name.split(".").pop().toLowerCase();
   const pathname = `${folder}/${crypto.randomUUID()}.${extension}`;
   return uploadBlob(pathname, file, {
     access: "public",
     contentType: file.type,
     handleUploadUrl: "/api/admin/upload",
+    multipart: folder === "hero",
+    onUploadProgress,
     clientPayload: JSON.stringify({ contentType: file.type })
   });
+}
+
+async function uploadImage(file, folder) {
+  return uploadFile(file, folder);
 }
 
 function request(url, options = {}) {
@@ -426,6 +478,20 @@ function validateImage(file, allowGif = false) {
   }
   if (file.size > 5 * 1024 * 1024) {
     showMessage("A imagem deve ter no máximo 5 MB.", true);
+    return false;
+  }
+  return true;
+}
+
+function validateVideo(file) {
+  const acceptedTypes = { mp4: "video/mp4", webm: "video/webm" };
+  const extension = file?.name.split(".").pop().toLowerCase();
+  if (!file || acceptedTypes[extension] !== file.type) {
+    showMessage("Selecione um vídeo MP4 ou WebM válido.", true);
+    return false;
+  }
+  if (file.size > 100 * 1024 * 1024) {
+    showMessage("O vídeo deve ter no máximo 100 MB.", true);
     return false;
   }
   return true;
