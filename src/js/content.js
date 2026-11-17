@@ -158,8 +158,10 @@ function createNewsCard(news) {
 }
 
 function createSlide(slideData) {
-  const slide = document.createElement("div");
+  const slide = document.createElement("article");
   slide.className = "slide";
+  slide.setAttribute("role", "group");
+  slide.setAttribute("aria-roledescription", "slide");
   const image = document.createElement("img");
   image.src = slideData.imagemUrl;
   image.alt = slideData.legenda || "Imagem do carrossel";
@@ -168,26 +170,46 @@ function createSlide(slideData) {
     const link = document.createElement("a");
     link.className = "slide-link";
     link.href = slideData.link;
+    link.setAttribute("aria-label", `Abrir destaque: ${slideData.legenda || "ver detalhes"}`);
     link.appendChild(image);
     slide.appendChild(link);
   } else {
     slide.appendChild(image);
   }
 
-  const caption = document.createElement("p");
-  caption.textContent = slideData.legenda || "";
-  slide.appendChild(caption);
+  if (slideData.legenda || slideData.link) {
+    const content = document.createElement("div");
+    content.className = "slide-content";
+    if (slideData.legenda) {
+      const caption = document.createElement("h2");
+      caption.className = "slide-caption";
+      caption.textContent = slideData.legenda;
+      content.appendChild(caption);
+    }
+    if (slideData.link) {
+      const link = document.createElement("a");
+      link.className = "slide-cta";
+      link.href = slideData.link;
+      link.textContent = "Saiba mais";
+      content.appendChild(link);
+    }
+    slide.appendChild(content);
+  }
+
   return slide;
 }
 
 function syncCarouselIndicators(carousel) {
-  const indicators = document.querySelector(".carousel-indicators");
+  const indicators = carousel.querySelector(".carousel-indicators");
   if (!indicators) return;
   const total = carousel.querySelectorAll(".slide").length;
   indicators.replaceChildren(...Array.from({ length: total }, (_, index) => {
-    const dot = document.createElement("span");
-    dot.className = `dot${index === 0 ? " active" : ""}`;
-    dot.dataset.slide = index;
-    return dot;
+    const indicator = document.createElement("button");
+    indicator.type = "button";
+    indicator.className = "carousel-indicator";
+    indicator.dataset.slide = index;
+    indicator.setAttribute("aria-label", `Ir para o destaque ${index + 1}`);
+    indicator.setAttribute("aria-current", index === 0 ? "true" : "false");
+    return indicator;
   }));
 }
