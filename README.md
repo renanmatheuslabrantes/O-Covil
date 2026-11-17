@@ -93,7 +93,6 @@ schema.sql
 api/
   _lib/db.js
   admin/
-    hero-video.js
     posts.js
     upload.js
   posts.js
@@ -109,7 +108,7 @@ src/
 4. No console SQL do banco conectado, execute `schema.sql` para criar as tabelas e atualizar as colunas existentes, incluindo `site_settings` para o vídeo de fundo e o limite de 240 caracteres para títulos. Execute-o novamente após atualizações de schema; as instruções são seguras para reaplicação.
 5. Faça um novo deploy depois de salvar as variáveis. A biblioteca de upload no navegador é carregada da versão `@vercel/blob@2.8.0` via esm.sh; o token de leitura/escrita continua exclusivamente no servidor.
 
-Depois de aplicar `schema.sql` e publicar, administradores podem trocar o vídeo de fundo em `/admin.html`; arquivos MP4 e WebM de até 100 MiB são enviados diretamente ao Blob com upload multipart. A URL ativa fica em `site_settings` e é lida por `api/content.js`; `api/admin/hero-video.js` atualiza a configuração e remove o arquivo anterior do Blob.
+Depois de aplicar `schema.sql` e publicar, administradores podem trocar o vídeo de fundo em `/admin.html`; arquivos MP4 e WebM de até 100 MiB são enviados diretamente ao Blob com upload multipart. A URL ativa fica em `site_settings` e é lida por `api/content.js`; `api/admin/upload.js` atende a configuração do vídeo apenas para administradores e remove o arquivo anterior do Blob após salvar a nova URL.
 
 Uploads de imagem aceitam JPG, JPEG, PNG e WebP até 5 MiB. O vídeo de fundo aceita MP4 e WebM até 100 MiB, apenas para administradores, usando upload multipart do Vercel Blob. A função autenticada restringe tipos, tamanho, extensão e nome aleatório antes de emitir token; a API de posts valida os campos e aceita apenas URLs públicas do Blob sob o caminho `posts/`. A rota POST limita cada sessão administrativa a 10 posts por hora usando Postgres.
 

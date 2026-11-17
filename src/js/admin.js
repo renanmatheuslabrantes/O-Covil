@@ -49,7 +49,7 @@ heroVideoForm.addEventListener("submit", async (event) => {
     const upload = await uploadFile(file, "hero", ({ percentage }) => {
       setFormBusy(heroVideoForm, true, `Enviando vídeo... ${Math.round(percentage)}%`);
     });
-    const setting = await request("/api/admin/hero-video", {
+    const setting = await request("/api/admin/upload", {
       method: "PUT",
       body: JSON.stringify({ videoUrl: upload.url })
     });
@@ -257,7 +257,7 @@ async function checkSession() {
 
 async function loadHeroVideo() {
   try {
-    const setting = await request("/api/admin/hero-video");
+    const setting = await request("/api/admin/upload");
     renderHeroVideoPreview(setting.videoUrl);
   } catch (error) {
     showMessage(error.message || "Não foi possível carregar o vídeo de fundo.", true);

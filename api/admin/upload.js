@@ -1,8 +1,12 @@
+import { del } from "@vercel/blob";
 import { handleUpload } from "@vercel/blob/client";
-import { getSession } from "../_lib/auth.js";
+import { getSession, requireRole } from "../_lib/auth.js";
+import { sql } from "../_lib/db.js";
 
 const maximumImageSizeInBytes = 5 * 1024 * 1024;
 const maximumVideoSizeInBytes = 100 * 1024 * 1024;
+const blobHostSuffix = ".public.blob.vercel-storage.com";
+const heroVideoPathPattern = /^\/hero\/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.(mp4|webm)$/i;
 const contentTypesByExtension = {
   jpg: "image/jpeg",
   jpeg: "image/jpeg",
@@ -16,6 +20,42 @@ const videoContentTypesByExtension = {
 };
 
 export default async function handler(req, res) {
+  if (req.method === "GET" || req.method === "PUT") {
+    const session = requireRole(req, res, ["admin"]);
+    if (!session) return;
+
+    res.setHeader("Cache-Control", "no-store");
+
+    try {
+      if (req.method === "GET") {
+        const [setting] = await sql`select value from site_settings where key = 'hero_video_url'`;
+        return res.status(200).json({ videoUrl: setting?.value || "" });
+      }
+
+      const { videoUrl } = req.body || {};
+      if (!isValidHeroVideoUrl(videoUrl)) {
+        return res.status(400).json({ error: "Envie um vídeo MP4 ou WebM válido." });
+      }
+
+      const [previous] = await sql`select value from site_settings where key = 'hero_video_url'`;
+      const [setting] = await sql`
+        insert into site_settings (key, value)
+        values ('hero_video_url', ${videoUrl})
+        on conflict (key) do update set value = excluded.value, updated_at = now()
+        returning value
+      `;
+
+      if (previous?.value && previous.value !== setting.value) {
+        await del(previous.value).catch((error) => console.error("Falha ao apagar vídeo de fundo antigo:", error));
+      }
+
+      return res.status(200).json({ videoUrl: setting.value });
+    } catch (error) {
+      console.error("Falha ao gerenciar vídeo de fundo:", error);
+      return res.status(500).json({ error: "Não foi possível salvar o vídeo de fundo." });
+    }
+  }
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Método não permitido." });
   }
@@ -82,5 +122,17 @@ export default async function handler(req, res) {
     }
     console.error("Falha ao gerar token de upload:", error);
     return res.status(400).json({ error: error.message || "Não foi possível enviar a imagem." });
+  }
+}
+
+function isValidHeroVideoUrl(value) {
+  if (typeof value !== "string" || value.length > 2048) return false;
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" &&
+      url.hostname.endsWith(blobHostSuffix) &&
+      heroVideoPathPattern.test(url.pathname);
+  } catch {
+    return false;
   }
 }
