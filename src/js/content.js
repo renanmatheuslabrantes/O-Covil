@@ -1,3 +1,5 @@
+import { postUrl } from "./post-url.js";
+
 const newsPageSize = 12;
 
 export async function loadRemoteContent(newsContainer, carousel) {
@@ -125,7 +127,7 @@ function createPostCard(post) {
   article.className = "news-card";
   const link = document.createElement("a");
   link.className = "news-card-link";
-  link.href = `/p/post/?id=${encodeURIComponent(post.id)}`;
+  link.href = postUrl(post);
   link.setAttribute("aria-label", `Ler publicação: ${post.titulo}`);
   const image = document.createElement("img");
   image.src = post.imagemUrl;

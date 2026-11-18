@@ -1,6 +1,9 @@
+import { postUrl } from "./post-url.js";
+
 const status = document.getElementById("post-status");
 const content = document.getElementById("post-content");
-const postId = new URLSearchParams(window.location.search).get("id");
+const postId = new URLSearchParams(window.location.search).get("id") ||
+  window.location.pathname.match(/\/p\/post\/[^/]+-(\d+)\/?$/)?.[1];
 
 if (!postId || !/^\d+$/.test(postId)) {
   showUnavailable();
@@ -15,6 +18,14 @@ async function loadPost(id) {
 
     const post = await response.json();
     document.title = `${post.titulo} | O Covil`;
+    const canonicalUrl = new URL(postUrl(post), window.location.origin).href;
+    document.getElementById("post-canonical").href = canonicalUrl;
+    document.getElementById("post-description").content = post.resumo || post.titulo;
+    document.getElementById("post-og-title").content = post.titulo;
+    document.getElementById("post-og-description").content = post.resumo || post.titulo;
+    document.getElementById("post-og-image").content = post.imagemUrl;
+    document.getElementById("post-og-url").content = canonicalUrl;
+    window.history.replaceState(null, "", canonicalUrl);
     document.getElementById("post-title").textContent = post.titulo;
 
     const image = document.getElementById("post-image");

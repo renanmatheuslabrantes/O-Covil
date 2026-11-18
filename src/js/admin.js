@@ -12,6 +12,7 @@ const carouselList = document.getElementById("carousel-list");
 const postsList = document.getElementById("posts-list");
 const postEditor = document.getElementById("post-content");
 const postEditorToolbar = document.getElementById("post-editor-toolbar");
+const postInlineImage = document.getElementById("post-inline-image");
 const postContentValue = document.getElementById("post-content-value");
 const postContentCount = document.getElementById("post-content-count");
 const postTitle = document.getElementById("post-title");
@@ -34,6 +35,7 @@ const heroVideoPreview = document.getElementById("hero-video-preview");
 let currentSession = null;
 let currentProfile = null;
 let selectedAvatarPreviewUrl = null;
+let savedPostSelection = null;
 
 postEditorToolbar.addEventListener("mousedown", (event) => {
   if (event.target.closest("button")) event.preventDefault();
@@ -67,6 +69,12 @@ postEditorToolbar.addEventListener("click", (event) => {
   const button = event.target.closest("button");
   if (!button) return;
 
+  if (button.dataset.editorImage !== undefined) {
+    savedPostSelection = capturePostEditorSelection();
+    postInlineImage.click();
+    return;
+  }
+
   if (button.dataset.editorLink !== undefined) {
     insertPostLink();
     return;
@@ -75,6 +83,32 @@ postEditorToolbar.addEventListener("click", (event) => {
   postEditor.focus();
   document.execCommand(button.dataset.editorCommand, false, button.dataset.editorValue || null);
   updatePostContentCount();
+});
+
+postInlineImage.addEventListener("change", async () => {
+  const file = postInlineImage.files[0];
+  if (!file) return;
+  if (!validateImage(file)) {
+    postInlineImage.value = "";
+    return;
+  }
+
+  const button = postEditorToolbar.querySelector("[data-editor-image]");
+  button.disabled = true;
+  button.textContent = "Enviando...";
+
+  try {
+    const image = await uploadImage(file, "posts");
+    insertPostEditorImage(image.url, file.name.replace(/\.[^.]+$/, ""));
+    showMessage("Imagem inserida no conteúdo.");
+  } catch (error) {
+    showMessage(error.message || "Não foi possível inserir a imagem.", true);
+  } finally {
+    button.disabled = false;
+    button.textContent = "Imagem";
+    postInlineImage.value = "";
+    savedPostSelection = null;
+  }
 });
 
 postEditor.addEventListener("input", updatePostContentCount);
@@ -454,6 +488,41 @@ async function uploadFile(file, folder, onUploadProgress) {
     onUploadProgress,
     clientPayload: JSON.stringify({ contentType: file.type })
   });
+}
+
+function capturePostEditorSelection() {
+  const selection = window.getSelection();
+  if (!selection?.rangeCount) return null;
+  const range = selection.getRangeAt(0);
+  if (range.commonAncestorContainer !== postEditor && !postEditor.contains(range.commonAncestorContainer)) return null;
+  return range.cloneRange();
+}
+
+function insertPostEditorImage(url, alt) {
+  postEditor.focus();
+  const selection = window.getSelection();
+  const range = savedPostSelection;
+  if (range && (range.commonAncestorContainer === postEditor || postEditor.contains(range.commonAncestorContainer))) {
+    selection.removeAllRanges();
+    selection.addRange(range);
+  } else {
+    selection.selectAllChildren(postEditor);
+    selection.collapseToEnd();
+  }
+
+  const image = document.createElement("img");
+  image.src = url;
+  image.alt = alt;
+  const insertion = selection.getRangeAt(0);
+  insertion.deleteContents();
+  insertion.insertNode(image);
+  const lineBreak = document.createElement("br");
+  image.after(lineBreak);
+  insertion.setStartAfter(lineBreak);
+  insertion.collapse(true);
+  selection.removeAllRanges();
+  selection.addRange(insertion);
+  updatePostContentCount();
 }
 
 async function uploadImage(file, folder) {
