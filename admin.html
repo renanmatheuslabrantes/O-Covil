@@ -63,8 +63,10 @@
                             <button type="button" data-editor-command="insertUnorderedList" aria-label="Lista com marcadores" title="Lista com marcadores">Lista</button>
                             <button type="button" data-editor-command="insertOrderedList" aria-label="Lista numerada" title="Lista numerada">1. Lista</button>
                             <button type="button" data-editor-link aria-label="Inserir link" title="Inserir link">Link</button>
+                            <button type="button" data-editor-image aria-label="Inserir imagem" title="Inserir imagem">Imagem</button>
                         </div>
                         <div id="post-content" class="rich-text-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-required="true" aria-labelledby="post-content-label" data-placeholder="Escreva o conteúdo da publicação..."></div>
+                        <input id="post-inline-image" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" hidden>
                         <input id="post-content-value" type="hidden" name="conteudo">
                         <div id="post-content-count" class="rich-text-count" aria-live="polite">0 / 10000</div>
                         <label for="post-image">Imagem (JPG, PNG ou WebP; até 5 MB)</label>

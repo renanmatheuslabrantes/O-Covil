@@ -1,7 +1,7 @@
 import { del } from "@vercel/blob";
 import { sql } from "../_lib/db.js";
 import { requireSession } from "../_lib/auth.js";
-import { preparePostContent, toPublicPost } from "../_lib/post-content.js";
+import { extractPostImageUrls, preparePostContent, toPublicPost } from "../_lib/post-content.js";
 
 const maximumImageSize = 5 * 1024 * 1024;
 const blobHostSuffix = ".public.blob.vercel-storage.com";
@@ -60,9 +60,12 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: "Identificador inválido." });
       }
 
-      const [post] = await sql`delete from posts where id = ${id} returning imagem_url`;
-      if (post?.imagem_url) {
-        await del(post.imagem_url).catch((error) => console.error("Falha ao apagar imagem do Blob:", error));
+      const [post] = await sql`delete from posts where id = ${id} returning imagem_url, conteudo`;
+      if (post) {
+        const imageUrls = new Set([post.imagem_url, ...extractPostImageUrls(post.conteudo)].filter(Boolean));
+        await Promise.all([...imageUrls].map((url) =>
+          del(url).catch((error) => console.error("Falha ao apagar imagem do Blob:", error))
+        ));
       }
       return res.status(204).end();
     }

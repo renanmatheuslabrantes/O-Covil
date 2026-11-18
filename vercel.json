@@ -1,4 +1,10 @@
 {
+  "rewrites": [
+    {
+      "source": "/p/post/:postSlug",
+      "destination": "/p/post/"
+    }
+  ],
   "crons": [
     {
       "path": "/api/cron/cleanup-news",

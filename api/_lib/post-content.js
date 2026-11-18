@@ -1,12 +1,15 @@
 import sanitizeHtml from "sanitize-html";
 
 const richContentPrefix = "rich-html-v1:";
-const allowedTags = ["p", "br", "h2", "h3", "strong", "b", "em", "i", "u", "ul", "ol", "li", "blockquote", "a"];
+const allowedTags = ["p", "br", "h2", "h3", "strong", "b", "em", "i", "u", "ul", "ol", "li", "blockquote", "a", "img"];
+const blobHostSuffix = ".public.blob.vercel-storage.com";
+const postImagePathPattern = /^\/posts\/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.(jpg|jpeg|png|webp)$/i;
 const richContentOptions = {
   allowedTags,
-  allowedAttributes: { a: ["href"] },
+  allowedAttributes: { a: ["href"], img: ["src", "alt"] },
   allowedSchemes: ["http", "https", "mailto"],
-  allowedSchemesByTag: { a: ["http", "https", "mailto"] }
+  allowedSchemesByTag: { a: ["http", "https", "mailto"], img: ["https"] },
+  exclusiveFilter: (frame) => frame.tag === "img" && !isValidPostImageUrl(frame.attribs.src)
 };
 const plainTextOptions = { allowedTags: [], allowedAttributes: {} };
 
@@ -41,4 +44,23 @@ export function toPublicPost(post) {
       fotoUrl: post.author_avatar_url || ""
     } : null
   };
+}
+
+export function extractPostImageUrls(value) {
+  if (typeof value !== "string" || !value.startsWith(richContentPrefix)) return [];
+  const content = value.slice(richContentPrefix.length);
+  const urls = [...content.matchAll(/<img\b[^>]*\bsrc="([^"]+)"/gi)].map((match) => match[1]);
+  return urls.filter(isValidPostImageUrl);
+}
+
+function isValidPostImageUrl(value) {
+  if (typeof value !== "string" || value.length > 2048) return false;
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" &&
+      url.hostname.endsWith(blobHostSuffix) &&
+      postImagePathPattern.test(url.pathname);
+  } catch {
+    return false;
+  }
 }
