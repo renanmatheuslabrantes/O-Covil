@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/p/post/:postSlug",
-      "destination": "/p/post/"
+      "destination": "/api/posts?slug=:postSlug"
     }
   ],
   "crons": [

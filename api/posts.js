@@ -1,7 +1,10 @@
 import { sql } from "./_lib/db.js";
 import { toPublicPost } from "./_lib/post-content.js";
+import { renderPostPage } from "./_lib/post-page.js";
+import { postUrl } from "../src/js/post-url.js";
 
 const newsPageSize = 12;
+const canonicalOrigin = "https://o-covil.vercel.app";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -11,6 +14,35 @@ export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
 
   try {
+    if (req.query.slug !== undefined) {
+      const slug = typeof req.query.slug === "string" ? req.query.slug : "";
+      const match = slug.match(/^([a-z0-9-]{1,80})-(\d+)$/i);
+      const id = match ? Number(match[2]) : 0;
+      if (!Number.isSafeInteger(id) || id < 1) {
+        return res.status(404).send("Publicação não encontrada.");
+      }
+
+      const [post] = await sql`
+        select id, titulo, resumo, imagem_url
+        from posts
+        where id = ${id}
+      `;
+      if (!post) {
+        return res.status(404).send("Publicação não encontrada.");
+      }
+
+      const canonicalUrl = `${canonicalOrigin}${postUrl(post)}`;
+      const canonicalSlug = postUrl(post).slice("/p/post/".length);
+      if (slug !== canonicalSlug) {
+        res.setHeader("Location", canonicalUrl);
+        return res.status(308).end();
+      }
+
+      res.setHeader("Content-Type", "text/html; charset=utf-8");
+      res.setHeader("Cache-Control", "public, max-age=0, s-maxage=300, stale-while-revalidate=600");
+      return res.status(200).send(renderPostPage(post, canonicalUrl));
+    }
+
     if (req.query.feed !== undefined) {
       const offset = Number(req.query.offset || 0);
       if (!Number.isSafeInteger(offset) || offset < 0 || offset > 1000000) {
