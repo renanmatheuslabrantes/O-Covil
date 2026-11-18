@@ -371,7 +371,26 @@ function createRecruitmentItem(application) {
     "Enviado em",
     new Intl.DateTimeFormat("pt-BR", { dateStyle: "medium", timeStyle: "short" }).format(submittedAt)
   );
-  item.append(name, details);
+
+  const removeButton = document.createElement("button");
+  removeButton.className = "admin-remove-button";
+  removeButton.type = "button";
+  removeButton.textContent = "Excluir pedido visualizado";
+  removeButton.setAttribute("aria-label", `Excluir pedido de recrutamento de ${application.nome}`);
+  removeButton.addEventListener("click", async () => {
+    if (!window.confirm(`Excluir o pedido de recrutamento de ${application.nome}? Esta ação não pode ser desfeita.`)) return;
+    removeButton.disabled = true;
+    try {
+      await request(`/api/applications?id=${encodeURIComponent(application.id)}`, { method: "DELETE" });
+      item.remove();
+      showMessage("Pedido de recrutamento excluído.");
+    } catch (error) {
+      showMessage(error.message || "Não foi possível excluir o pedido de recrutamento.", true);
+      removeButton.disabled = false;
+    }
+  });
+
+  item.append(name, details, removeButton);
   return item;
 }
 

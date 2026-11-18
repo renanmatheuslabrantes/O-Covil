@@ -15,6 +15,25 @@ export default async function handler(req, res) {
     }
   }
 
+  if (req.method === "DELETE") {
+    if (!requireRole(req, res, ["admin"])) return;
+    const id = Number(req.query.id);
+    if (!Number.isSafeInteger(id) || id < 1) {
+      return res.status(400).json({ error: "Identificador inválido." });
+    }
+
+    try {
+      const [application] = await sql`delete from alistamentos where id = ${id} returning id`;
+      if (!application) {
+        return res.status(404).json({ error: "Pedido de recrutamento não encontrado." });
+      }
+      return res.status(204).end();
+    } catch (error) {
+      console.error("Falha ao excluir pedido de recrutamento:", error);
+      return res.status(500).json({ error: "Não foi possível excluir o pedido de recrutamento." });
+    }
+  }
+
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Método não permitido." });
   }
