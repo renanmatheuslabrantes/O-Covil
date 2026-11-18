@@ -10,5 +10,5 @@ export function slugifyPostTitle(title) {
 }
 
 export function postUrl(post) {
-  return `/p/post/${slugifyPostTitle(post.titulo)}-${encodeURIComponent(post.id)}/`;
+  return `/p/post/${slugifyPostTitle(post.titulo)}-${encodeURIComponent(post.id)}`;
 }
