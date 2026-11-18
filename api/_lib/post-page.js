@@ -10,15 +10,15 @@ export function renderPostPage(post, canonicalUrl) {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${title} | O Covil</title>
-  <meta name="description" content="${description}">
-  <link rel="canonical" href="${url}">
+  <meta id="post-description" name="description" content="${description}">
+  <link id="post-canonical" rel="canonical" href="${url}">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="O Covil">
-  <meta property="og:title" content="${title}">
-  <meta property="og:description" content="${description}">
-  <meta property="og:image" content="${imageUrl}">
+  <meta id="post-og-title" property="og:title" content="${title}">
+  <meta id="post-og-description" property="og:description" content="${description}">
+  <meta id="post-og-image" property="og:image" content="${imageUrl}">
   <meta property="og:image:alt" content="${title}">
-  <meta property="og:url" content="${url}">
+  <meta id="post-og-url" property="og:url" content="${url}">
   <meta name="twitter:card" content="summary">
   <meta name="twitter:title" content="${title}">
   <meta name="twitter:description" content="${description}">
