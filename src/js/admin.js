@@ -122,6 +122,48 @@ postInlineImage.addEventListener("change", async () => {
 });
 
 postEditor.addEventListener("input", updatePostContentCount);
+postEditor.addEventListener("paste", async (event) => {
+  const clipboard = event.clipboardData;
+  const itemFiles = [...(clipboard?.items || [])]
+    .filter((item) => item.kind === "file" && item.type.startsWith("image/"))
+    .map((item) => item.getAsFile())
+    .filter(Boolean);
+  const clipboardFiles = itemFiles.length
+    ? itemFiles
+    : [...(clipboard?.files || [])].filter((file) => file.type.startsWith("image/"));
+  const pastedFiles = clipboardFiles.map(normalizePastedImage);
+  if (!pastedFiles.length) return;
+
+  event.preventDefault();
+  clearPostMessage();
+  if (!pastedFiles.every((file) => validateImage(file, {
+    maximumSizeInBytes: maximumPostImageSizeInBytes,
+    onError: showPostMessage
+  }))) return;
+
+  savedPostSelection = capturePostEditorSelection();
+  const button = postEditorToolbar.querySelector("[data-editor-image]");
+  button.disabled = true;
+  button.textContent = "Preparando...";
+
+  try {
+    for (const [index, file] of pastedFiles.entries()) {
+      const preparedImage = await preparePostImage(file);
+      button.textContent = "Enviando...";
+      const image = await uploadImage(preparedImage, "posts");
+      insertPostEditorImage(image.url, `Imagem colada ${index + 1}`);
+    }
+    showPostMessage(pastedFiles.length === 1
+      ? "Imagem colada no conteúdo."
+      : `${pastedFiles.length} imagens coladas no conteúdo.`);
+  } catch (error) {
+    showPostMessage(error.message || "Não foi possível colar a imagem no conteúdo.", true);
+  } finally {
+    button.disabled = false;
+    button.textContent = "Imagem";
+    savedPostSelection = null;
+  }
+});
 postTitle.addEventListener("input", () => updateCharacterCount(postTitle, postTitleCount));
 postSummary.addEventListener("input", () => updateCharacterCount(postSummary, postSummaryCount));
 carouselCaption.addEventListener("input", () => updateCharacterCount(carouselCaption, carouselCaptionCount));
@@ -561,7 +603,21 @@ function insertPostEditorImage(url, alt) {
   insertion.collapse(true);
   selection.removeAllRanges();
   selection.addRange(insertion);
+  savedPostSelection = insertion.cloneRange();
   updatePostContentCount();
+}
+
+function normalizePastedImage(file) {
+  const extensionsByType = {
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp"
+  };
+  const extension = extensionsByType[file.type] || "img";
+  return new File([file], `imagem-colada-${crypto.randomUUID()}.${extension}`, {
+    type: file.type,
+    lastModified: file.lastModified
+  });
 }
 
 async function uploadImage(file, folder) {
