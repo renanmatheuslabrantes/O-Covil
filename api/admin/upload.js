@@ -3,7 +3,8 @@ import { handleUpload } from "@vercel/blob/client";
 import { getSession, requireRole } from "../_lib/auth.js";
 import { sql } from "../_lib/db.js";
 
-const maximumImageSizeInBytes = 5 * 1024 * 1024;
+const maximumPostImageSizeInBytes = 10 * 1024 * 1024;
+const maximumOtherImageSizeInBytes = 5 * 1024 * 1024;
 const maximumVideoSizeInBytes = 100 * 1024 * 1024;
 const blobHostSuffix = ".public.blob.vercel-storage.com";
 const heroVideoPathPattern = /^\/hero\/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.(mp4|webm)$/i;
@@ -73,6 +74,7 @@ export default async function handler(req, res) {
         const imageMatch = pathname.match(/^(posts|content|profiles)\/([0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})\.(jpg|jpeg|png|webp|gif)$/i);
         const videoMatch = pathname.match(/^hero\/([0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})\.(mp4|webm)$/i);
         const isHeroVideo = Boolean(videoMatch);
+        const isPostImage = imageMatch?.[1] === "posts";
         const isCarouselAsset = imageMatch?.[1] === "content";
         const match = imageMatch || videoMatch;
         const extension = imageMatch ? imageMatch[3].toLowerCase() : videoMatch?.[2].toLowerCase();
@@ -100,15 +102,24 @@ export default async function handler(req, res) {
             : isCarouselAsset
               ? ["image/jpeg", "image/png", "image/webp", "image/gif"]
               : ["image/jpeg", "image/png", "image/webp"],
-          maximumSizeInBytes: isHeroVideo ? maximumVideoSizeInBytes : maximumImageSizeInBytes,
+          maximumSizeInBytes: isHeroVideo
+            ? maximumVideoSizeInBytes
+            : isPostImage
+              ? maximumPostImageSizeInBytes
+              : maximumOtherImageSizeInBytes,
           validUntil: Date.now() + 5 * 60 * 1000
         };
       },
       onUploadCompleted: async ({ blob }) => {
         const extension = blob.pathname.split(".").pop().toLowerCase();
         const isHeroVideo = blob.pathname.startsWith("hero/");
+        const isPostImage = blob.pathname.startsWith("posts/");
         const contentTypes = isHeroVideo ? videoContentTypesByExtension : contentTypesByExtension;
-        const maximumSizeInBytes = isHeroVideo ? maximumVideoSizeInBytes : maximumImageSizeInBytes;
+        const maximumSizeInBytes = isHeroVideo
+          ? maximumVideoSizeInBytes
+          : isPostImage
+            ? maximumPostImageSizeInBytes
+            : maximumOtherImageSizeInBytes;
         if (blob.size > maximumSizeInBytes || contentTypes[extension] !== blob.contentType) {
           throw new Error("Arquivo enviado não passou na validação.");
         }
