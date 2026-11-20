@@ -18,9 +18,21 @@ export default async function handler(req, res) {
 
     if (req.method === "POST") {
       const { titulo, resumo, conteudo, imagemUrl } = req.body || {};
+      if (!isValidText(titulo, 240)) {
+        return res.status(400).json({ error: "Informe um título válido com até 240 caracteres." });
+      }
+      if (!isValidText(resumo, 280)) {
+        return res.status(400).json({ error: "Informe uma descrição válida com até 280 caracteres." });
+      }
+
       const preparedContent = preparePostContent(conteudo);
-      if (!isValidText(titulo, 240) || !isValidText(resumo, 280) || !preparedContent || !isValidImageUrl(imagemUrl)) {
-        return res.status(400).json({ error: "Informe título, descrição, conteúdo e uma imagem válida." });
+      if (!preparedContent) {
+        return res.status(400).json({
+          error: "Não foi possível validar o conteúdo. Mantenha o texto em até 10.000 caracteres e remova formatação extra se ele foi colado."
+        });
+      }
+      if (!isValidImageUrl(imagemUrl)) {
+        return res.status(400).json({ error: "Não foi possível validar a imagem de capa. Selecione-a novamente em JPG, PNG ou WebP." });
       }
 
       const [rateLimit] = await sql`
