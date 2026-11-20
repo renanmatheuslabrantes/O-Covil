@@ -32,6 +32,50 @@
         <section id="content-panel" hidden>
             <div id="admin-message" class="admin-message" role="status"></div>
 
+            <section id="dashboard-panel" class="admin-dashboard" aria-labelledby="dashboard-title">
+                <div class="admin-dashboard-heading">
+                    <div>
+                        <p class="dashboard-eyebrow">Visão geral</p>
+                        <h1 id="dashboard-title">Olá!</h1>
+                        <p id="dashboard-description"></p>
+                    </div>
+                    <div class="dashboard-updated">
+                        <time id="dashboard-updated"></time>
+                        <button id="dashboard-refresh" class="dashboard-refresh-button" type="button">Atualizar métricas</button>
+                    </div>
+                </div>
+                <div id="dashboard-metrics" class="dashboard-metrics" aria-live="polite"></div>
+                <div class="dashboard-content-grid">
+                    <section class="dashboard-card dashboard-publications-card" aria-labelledby="dashboard-publications-title">
+                        <div class="dashboard-card-heading">
+                            <div>
+                                <h2 id="dashboard-publications-title">Publicações por mês</h2>
+                                <p>Últimos seis meses</p>
+                            </div>
+                        </div>
+                        <div id="dashboard-publications-chart" class="dashboard-publications-chart" role="img"></div>
+                    </section>
+                    <section id="dashboard-ranking-panel" class="dashboard-card" aria-labelledby="dashboard-ranking-title" hidden>
+                        <div class="dashboard-card-heading">
+                            <div>
+                                <h2 id="dashboard-ranking-title">Ranking dos jornalistas</h2>
+                                <p>Total de publicações por jornalista</p>
+                            </div>
+                        </div>
+                        <ol id="dashboard-ranking" class="dashboard-ranking"></ol>
+                    </section>
+                    <section id="dashboard-top-posts-panel" class="dashboard-card" aria-labelledby="dashboard-top-posts-title">
+                        <div class="dashboard-card-heading">
+                            <div>
+                                <h2 id="dashboard-top-posts-title">Notícias mais vistas</h2>
+                                <p>Visualizações acumuladas</p>
+                            </div>
+                        </div>
+                        <ol id="dashboard-top-posts" class="dashboard-top-posts"></ol>
+                    </section>
+                </div>
+            </section>
+
             <section id="hero-video-panel" class="admin-panel admin-list-panel" hidden>
                 <h2>Vídeo de fundo da página inicial</h2>
                 <p>Envie um vídeo MP4 (H.264) ou WebM de até 100 MB. O novo vídeo substituirá o atual após o envio.</p>

@@ -9,6 +9,18 @@ const postForm = document.getElementById("post-form");
 const postFormMessage = document.getElementById("post-form-message");
 const logoutButton = document.getElementById("logout-button");
 const message = document.getElementById("admin-message");
+const dashboardGreeting = document.getElementById("dashboard-title");
+const dashboardDescription = document.getElementById("dashboard-description");
+const dashboardUpdated = document.getElementById("dashboard-updated");
+const dashboardRefreshButton = document.getElementById("dashboard-refresh");
+const dashboardMetrics = document.getElementById("dashboard-metrics");
+const dashboardPublicationsChart = document.getElementById("dashboard-publications-chart");
+const dashboardRankingPanel = document.getElementById("dashboard-ranking-panel");
+const dashboardRanking = document.getElementById("dashboard-ranking");
+const dashboardTopPostsPanel = document.getElementById("dashboard-top-posts-panel");
+const dashboardTopPostsTitle = document.getElementById("dashboard-top-posts-title");
+const dashboardTopPostsDescription = dashboardTopPostsPanel.querySelector(".dashboard-card-heading p");
+const dashboardTopPosts = document.getElementById("dashboard-top-posts");
 const newsList = document.getElementById("news-list");
 const recruitmentPanel = document.getElementById("recruitment-panel");
 const recruitmentList = document.getElementById("recruitment-list");
@@ -195,6 +207,7 @@ loginForm.addEventListener("submit", async (event) => {
   setFormBusy(loginForm, false, "Entrar");
   showAuthenticatedArea(true, session);
   await loadProfile();
+  await loadDashboard();
   if (session.role === "admin") await loadHeroVideo();
   await loadContentLists();
 });
@@ -203,6 +216,8 @@ logoutButton.addEventListener("click", async () => {
   await request("/api/admin/logout", { method: "POST" });
   showAuthenticatedArea(false);
 });
+
+dashboardRefreshButton.addEventListener("click", loadDashboard);
 
 profileForm.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -232,6 +247,7 @@ profileForm.addEventListener("submit", async (event) => {
     selectedAvatarPreviewUrl = null;
     renderProfileAvatar(profile.avatarUrl);
     showMessage("Perfil atualizado.");
+    await loadDashboard();
   } catch (error) {
     showMessage(error.message || "Não foi possível salvar o perfil.", true);
   } finally {
@@ -263,6 +279,7 @@ accountForm.addEventListener("submit", async (event) => {
     if (!currentSession.isBootstrapAdmin) accountRole.value = "journalist";
     showMessage(`Conta ${account.login} criada como ${account.role === "admin" ? "administrador" : "jornalista"}.`);
     await loadAccounts();
+    await loadDashboard();
   } catch (error) {
     showMessage(error.message || "Não foi possível criar a conta.", true);
   } finally {
@@ -306,7 +323,7 @@ postForm.addEventListener("submit", async (event) => {
     updateCharacterCount(postTitle, postTitleCount);
     updateCharacterCount(postSummary, postSummaryCount);
     showPostMessage("Post publicado com sucesso.");
-    await loadPosts();
+    await Promise.all([loadPosts(), loadDashboard()]);
   } catch (error) {
     showPostMessage(error.message || "Não foi possível publicar o post.", true);
   } finally {
@@ -347,8 +364,170 @@ async function checkSession() {
     return;
   }
   await loadProfile();
+  await loadDashboard();
   if (currentSession?.role === "admin") await loadHeroVideo();
   await loadContentLists();
+}
+
+async function loadDashboard() {
+  dashboardRefreshButton.disabled = true;
+  dashboardRefreshButton.textContent = "Atualizando...";
+  try {
+    const data = await request("/api/admin/dashboard");
+    renderDashboard(data);
+  } catch (error) {
+    showMessage(error.message || "Não foi possível carregar as métricas do painel.", true);
+  } finally {
+    dashboardRefreshButton.disabled = false;
+    dashboardRefreshButton.textContent = "Atualizar métricas";
+  }
+}
+
+function renderDashboard(data) {
+  const isAdmin = currentSession?.role === "admin";
+  const metrics = data.metrics;
+  const displayName = (currentProfile?.displayName || currentSession?.email || "equipe").trim();
+  const firstName = displayName.split(/\s+/)[0] || "equipe";
+  const numberFormat = new Intl.NumberFormat("pt-BR");
+
+  dashboardGreeting.textContent = `Olá, ${firstName}!`;
+  dashboardDescription.textContent = isAdmin
+    ? "Acompanhe o alcance das notícias e a atividade da equipe."
+    : "Acompanhe o alcance e o ritmo das suas publicações.";
+  dashboardUpdated.dateTime = new Date().toISOString();
+  dashboardUpdated.textContent = `Atualizado ${new Intl.DateTimeFormat("pt-BR", {
+    dateStyle: "short",
+    timeStyle: "short"
+  }).format(new Date())}`;
+
+  const cards = isAdmin
+    ? [
+        { label: "Visualizações de notícias", value: metrics.views, detail: "Total acumulado" },
+        { label: "Publicações", value: metrics.publications, detail: "Posts publicados" },
+        { label: "Publicações neste mês", value: metrics.monthPublications, detail: "Desde o início do mês" },
+        { label: "Jornalistas", value: metrics.journalists, detail: "Contas cadastradas" }
+      ]
+    : [
+        { label: "Visualizações das minhas notícias", value: metrics.views, detail: "Total acumulado" },
+        { label: "Minhas publicações", value: metrics.publications, detail: "Posts publicados" },
+        { label: "Publicações neste mês", value: metrics.monthPublications, detail: "Desde o início do mês" },
+        { label: "Média de visualizações", value: metrics.averageViews, detail: "Por publicação" }
+      ];
+
+  dashboardMetrics.replaceChildren(...cards.map((card) => createDashboardMetric(card, numberFormat)));
+  renderPublicationChart(data.months || [], numberFormat);
+  renderDashboardRanking(data.ranking || [], numberFormat);
+  renderTopPosts(data.topPosts || [], numberFormat);
+  dashboardRankingPanel.hidden = !isAdmin;
+  dashboardTopPostsTitle.textContent = isAdmin ? "Notícias mais vistas" : "Minhas notícias mais vistas";
+  dashboardTopPostsDescription.textContent = isAdmin
+    ? "Visualizações acumuladas"
+    : "Visualizações acumuladas nas suas publicações";
+}
+
+function createDashboardMetric(metric, numberFormat) {
+  const card = document.createElement("article");
+  card.className = "dashboard-metric-card";
+  const label = document.createElement("span");
+  label.className = "dashboard-metric-label";
+  label.textContent = metric.label;
+  const value = document.createElement("strong");
+  value.className = "dashboard-metric-value";
+  value.textContent = numberFormat.format(Number(metric.value || 0));
+  const detail = document.createElement("span");
+  detail.className = "dashboard-metric-detail";
+  detail.textContent = metric.detail;
+  card.append(label, value, detail);
+  return card;
+}
+
+function renderPublicationChart(months, numberFormat) {
+  const maxPublications = Math.max(1, ...months.map((month) => Number(month.publications || 0)));
+  const columns = months.map((month) => {
+    const publications = Number(month.publications || 0);
+    const column = document.createElement("div");
+    column.className = "dashboard-chart-column";
+    column.setAttribute("role", "group");
+    column.setAttribute("aria-label", `${formatMonthLabel(month.month)}: ${numberFormat.format(publications)} publicações`);
+
+    const value = document.createElement("span");
+    value.className = "dashboard-chart-value";
+    value.textContent = numberFormat.format(publications);
+    const track = document.createElement("div");
+    track.className = "dashboard-chart-track";
+    const bar = document.createElement("span");
+    bar.className = "dashboard-chart-bar";
+    bar.style.height = `${publications ? Math.max(6, publications / maxPublications * 100) : 2}%`;
+    track.append(bar);
+    const label = document.createElement("span");
+    label.className = "dashboard-chart-label";
+    label.textContent = formatMonthLabel(month.month);
+    column.append(value, track, label);
+    return column;
+  });
+  dashboardPublicationsChart.replaceChildren(...columns);
+  const chartSummary = months
+    .map((month) => `${formatMonthLabel(month.month)}: ${numberFormat.format(Number(month.publications || 0))}`)
+    .join("; ");
+  dashboardPublicationsChart.setAttribute(
+    "aria-label",
+    `Publicações nos últimos seis meses, por mês: ${chartSummary}.`
+  );
+}
+
+function formatMonthLabel(month) {
+  const [year, monthNumber] = month.split("-").map(Number);
+  return new Intl.DateTimeFormat("pt-BR", { month: "short" })
+    .format(new Date(year, monthNumber - 1, 15))
+    .replace(".", "");
+}
+
+function renderDashboardRanking(journalists, numberFormat) {
+  const items = journalists.length
+    ? journalists.map((journalist, index) => {
+        const item = document.createElement("li");
+        item.className = "dashboard-ranking-item";
+        const position = document.createElement("span");
+        position.className = "dashboard-ranking-position";
+        position.textContent = numberFormat.format(index + 1);
+        const details = document.createElement("div");
+        details.className = "dashboard-ranking-details";
+        const name = document.createElement("strong");
+        name.textContent = journalist.name;
+        const publications = document.createElement("span");
+        publications.textContent = `${numberFormat.format(journalist.publications)} publicações`;
+        const views = document.createElement("span");
+        views.className = "dashboard-ranking-views";
+        views.textContent = `${numberFormat.format(journalist.views)} visualizações`;
+        details.append(name, publications);
+        item.append(position, details, views);
+        return item;
+      })
+    : [createDashboardEmptyItem("Nenhum jornalista cadastrado.")];
+  dashboardRanking.replaceChildren(...items);
+}
+
+function renderTopPosts(posts, numberFormat) {
+  const items = posts.length
+    ? posts.map((post) => {
+        const item = document.createElement("li");
+        item.className = "dashboard-top-post-item";
+        const title = document.createElement("strong");
+        title.textContent = post.title;
+        const views = document.createElement("span");
+        views.textContent = `${numberFormat.format(post.views)} visualizações`;
+        item.append(title, views);
+        return item;
+      })
+    : [createDashboardEmptyItem("Nenhuma publicação cadastrada.")];
+  dashboardTopPosts.replaceChildren(...items);
+}
+
+function createDashboardEmptyItem(text) {
+  const item = document.createElement("li");
+  item.className = "dashboard-empty-item";
+  item.textContent = text;
+  return item;
 }
 
 async function loadHeroVideo() {
@@ -522,7 +701,7 @@ async function removePost(id) {
   try {
     await request(`/api/admin/posts?id=${encodeURIComponent(id)}`, { method: "DELETE" });
     showMessage("Post removido.");
-    await loadPosts();
+    await Promise.all([loadPosts(), loadDashboard()]);
   } catch (error) {
     showMessage(error.message || "Não foi possível remover o post.", true);
   }
