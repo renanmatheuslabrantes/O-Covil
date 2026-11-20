@@ -1,6 +1,7 @@
 import sanitizeHtml from "sanitize-html";
 
 const richContentPrefix = "rich-html-v1:";
+const maximumPostHtmlLength = 1_000_000;
 const allowedTags = ["p", "br", "h2", "h3", "strong", "b", "em", "i", "u", "ul", "ol", "li", "blockquote", "a", "img"];
 const blobHostSuffix = ".public.blob.vercel-storage.com";
 const postImagePathPattern = /^\/posts\/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}\.(jpg|jpeg|png|webp)$/i;
@@ -14,7 +15,7 @@ const richContentOptions = {
 const plainTextOptions = { allowedTags: [], allowedAttributes: {} };
 
 export function preparePostContent(value) {
-  if (typeof value !== "string" || value.length > 20000) return null;
+  if (typeof value !== "string" || value.length > maximumPostHtmlLength) return null;
 
   const html = sanitizeHtml(value, richContentOptions);
   const text = sanitizeHtml(html, plainTextOptions).replace(/\u00a0/g, " ").trim();
