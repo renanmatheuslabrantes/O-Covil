@@ -1435,6 +1435,16 @@ footer {
     margin-top: -0.35rem;
 }
 
+.post-form-message {
+    color: var(--cor-primaria);
+    margin: 0;
+    min-height: 1.5rem;
+}
+
+.post-form-message.is-error {
+    color: #e58d8d;
+}
+
 .admin-form input,
 .admin-form textarea,
 .admin-form select {

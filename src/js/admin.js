@@ -5,6 +5,8 @@ const maximumPostImageDimension = 1920;
 const loginPanel = document.getElementById("login-panel");
 const contentPanel = document.getElementById("content-panel");
 const loginForm = document.getElementById("login-form");
+const postForm = document.getElementById("post-form");
+const postFormMessage = document.getElementById("post-form-message");
 const logoutButton = document.getElementById("logout-button");
 const message = document.getElementById("admin-message");
 const newsList = document.getElementById("news-list");
@@ -88,9 +90,13 @@ postEditorToolbar.addEventListener("click", (event) => {
 });
 
 postInlineImage.addEventListener("change", async () => {
+  clearPostMessage();
   const file = postInlineImage.files[0];
   if (!file) return;
-  if (!validateImage(file, { maximumSizeInBytes: maximumPostImageSizeInBytes })) {
+  if (!validateImage(file, {
+    maximumSizeInBytes: maximumPostImageSizeInBytes,
+    onError: showPostMessage
+  })) {
     postInlineImage.value = "";
     return;
   }
@@ -104,9 +110,9 @@ postInlineImage.addEventListener("change", async () => {
     button.textContent = "Enviando...";
     const image = await uploadImage(preparedImage, "posts");
     insertPostEditorImage(image.url, file.name.replace(/\.[^.]+$/, ""));
-    showMessage("Imagem inserida no conteúdo.");
+    showPostMessage("Imagem inserida no conteúdo.");
   } catch (error) {
-    showMessage(error.message || "Não foi possível inserir a imagem.", true);
+    showPostMessage(error.message || "Não foi possível inserir a imagem.", true);
   } finally {
     button.disabled = false;
     button.textContent = "Imagem";
@@ -222,12 +228,20 @@ accountForm.addEventListener("submit", async (event) => {
   }
 });
 
-document.getElementById("post-form").addEventListener("submit", async (event) => {
+postForm.addEventListener("input", clearPostMessage);
+postForm.addEventListener("invalid", () => {
+  showPostMessage("Preencha os campos obrigatórios do post antes de publicar.", true);
+}, true);
+postForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+  clearPostMessage();
   const form = event.currentTarget;
   const file = form.imagem.files[0];
   if (!syncPostContent()) return;
-  if (!validateImage(file, { maximumSizeInBytes: maximumPostImageSizeInBytes })) return;
+  if (!validateImage(file, {
+    maximumSizeInBytes: maximumPostImageSizeInBytes,
+    onError: showPostMessage
+  })) return;
   setFormBusy(form, true, "Preparando imagem...");
 
   try {
@@ -249,10 +263,10 @@ document.getElementById("post-form").addEventListener("submit", async (event) =>
     updatePostContentCount();
     updateCharacterCount(postTitle, postTitleCount);
     updateCharacterCount(postSummary, postSummaryCount);
-    showMessage("Post publicado.");
+    showPostMessage("Post publicado com sucesso.");
     await loadPosts();
   } catch (error) {
-    showMessage(error.message || "Não foi possível publicar o post.", true);
+    showPostMessage(error.message || "Não foi possível publicar o post.", true);
   } finally {
     setFormBusy(form, false, "Publicar post");
   }
@@ -606,16 +620,20 @@ function request(url, options = {}) {
   });
 }
 
-function validateImage(file, { allowGif = false, maximumSizeInBytes = 5 * 1024 * 1024 } = {}) {
+function validateImage(file, {
+  allowGif = false,
+  maximumSizeInBytes = 5 * 1024 * 1024,
+  onError = showMessage
+} = {}) {
   const acceptedTypes = { jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp" };
   if (allowGif) acceptedTypes.gif = "image/gif";
   const extension = file?.name.split(".").pop().toLowerCase();
   if (!file || acceptedTypes[extension] !== file.type) {
-    showMessage(`Use uma imagem ${allowGif ? "JPG, PNG, WebP ou GIF" : "JPG, PNG ou WebP"} válida.`, true);
+    onError(`Use uma imagem ${allowGif ? "JPG, PNG, WebP ou GIF" : "JPG, PNG ou WebP"} válida.`, true);
     return false;
   }
   if (file.size > maximumSizeInBytes) {
-    showMessage(`A imagem deve ter no máximo ${maximumSizeInBytes / (1024 * 1024)} MB.`, true);
+    onError(`A imagem deve ter no máximo ${maximumSizeInBytes / (1024 * 1024)} MB.`, true);
     return false;
   }
   return true;
@@ -646,6 +664,15 @@ function showMessage(text, isError = false) {
   message.className = `admin-message${isError ? " is-error" : ""}`;
 }
 
+function showPostMessage(text, isError = false) {
+  postFormMessage.textContent = text;
+  postFormMessage.className = `post-form-message${isError ? " is-error" : ""}`;
+}
+
+function clearPostMessage() {
+  showPostMessage("");
+}
+
 function updatePostContentCount() {
   const length = postEditor.innerText.replace(/\u00a0/g, " ").trim().length;
   postContentCount.textContent = `${length} / 10000`;
@@ -662,7 +689,7 @@ function updateCharacterCount(input, counter) {
 function syncPostContent() {
   const text = postEditor.innerText.replace(/\u00a0/g, " ").trim();
   if (!text || text.length > 10000) {
-    showMessage(text ? "O conteúdo deve ter no máximo 10000 caracteres." : "Escreva o conteúdo da publicação.", true);
+    showPostMessage(text ? "O conteúdo deve ter no máximo 10000 caracteres." : "Escreva o conteúdo da publicação.", true);
     postEditor.focus();
     return false;
   }
