@@ -1,5 +1,7 @@
 import { upload as uploadBlob } from "https://esm.sh/@vercel/blob@2.8.0/client";
 
+const maximumPostImageSizeInBytes = 10 * 1024 * 1024;
+const maximumPostImageDimension = 1920;
 const loginPanel = document.getElementById("login-panel");
 const contentPanel = document.getElementById("content-panel");
 const loginForm = document.getElementById("login-form");
@@ -88,17 +90,19 @@ postEditorToolbar.addEventListener("click", (event) => {
 postInlineImage.addEventListener("change", async () => {
   const file = postInlineImage.files[0];
   if (!file) return;
-  if (!validateImage(file)) {
+  if (!validateImage(file, { maximumSizeInBytes: maximumPostImageSizeInBytes })) {
     postInlineImage.value = "";
     return;
   }
 
   const button = postEditorToolbar.querySelector("[data-editor-image]");
   button.disabled = true;
-  button.textContent = "Enviando...";
+  button.textContent = "Preparando...";
 
   try {
-    const image = await uploadImage(file, "posts");
+    const preparedImage = await preparePostImage(file);
+    button.textContent = "Enviando...";
+    const image = await uploadImage(preparedImage, "posts");
     insertPostEditorImage(image.url, file.name.replace(/\.[^.]+$/, ""));
     showMessage("Imagem inserida no conteúdo.");
   } catch (error) {
@@ -223,11 +227,13 @@ document.getElementById("post-form").addEventListener("submit", async (event) =>
   const form = event.currentTarget;
   const file = form.imagem.files[0];
   if (!syncPostContent()) return;
-  if (!validateImage(file)) return;
-  setFormBusy(form, true, "Enviando imagem...");
+  if (!validateImage(file, { maximumSizeInBytes: maximumPostImageSizeInBytes })) return;
+  setFormBusy(form, true, "Preparando imagem...");
 
   try {
-    const image = await uploadImage(file, "posts");
+    const preparedImage = await preparePostImage(file);
+    setFormBusy(form, true, "Enviando imagem...");
+    const image = await uploadImage(preparedImage, "posts");
     setFormBusy(form, true, "Publicando...");
     await request("/api/admin/posts", {
       method: "POST",
@@ -256,7 +262,7 @@ document.getElementById("carousel-form").addEventListener("submit", async (event
   event.preventDefault();
   const form = event.currentTarget;
   const file = form.imagem.files[0];
-  if (!validateImage(file, true)) return;
+  if (!validateImage(file, { allowGif: true })) return;
   setFormBusy(form, true, "Enviando...");
 
   try {
@@ -548,6 +554,50 @@ async function uploadImage(file, folder) {
   return uploadFile(file, folder);
 }
 
+async function preparePostImage(file) {
+  if (typeof createImageBitmap !== "function") {
+    throw new Error("Este navegador não consegue ajustar a imagem. Use um navegador atualizado.");
+  }
+
+  let bitmap;
+  try {
+    bitmap = await createImageBitmap(file);
+  } catch {
+    throw new Error("Não foi possível ler a imagem. Use um arquivo JPG, PNG ou WebP válido.");
+  }
+
+  try {
+    const largestSide = Math.max(bitmap.width, bitmap.height);
+    if (largestSide <= maximumPostImageDimension) return file;
+
+    const scale = maximumPostImageDimension / largestSide;
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.round(bitmap.width * scale);
+    canvas.height = Math.round(bitmap.height * scale);
+    const context = canvas.getContext("2d");
+    if (!context) throw new Error("Não foi possível ajustar a resolução da imagem.");
+
+    context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    const resizedBlob = await new Promise((resolve, reject) => {
+      canvas.toBlob((blob) => {
+        if (blob) {
+          resolve(blob);
+        } else {
+          reject(new Error("Não foi possível ajustar a resolução da imagem."));
+        }
+      }, file.type, 0.9);
+    });
+
+    if (resizedBlob.size > maximumPostImageSizeInBytes) {
+      throw new Error("A imagem ajustada ultrapassou 10 MB. Escolha um arquivo menor.");
+    }
+
+    return new File([resizedBlob], file.name, { type: file.type, lastModified: file.lastModified });
+  } finally {
+    bitmap.close();
+  }
+}
+
 function request(url, options = {}) {
   return fetch(url, { ...options, headers: { "Content-Type": "application/json", ...(options.headers || {}) } }).then(async (response) => {
     const data = response.status === 204 || !response.headers.get("content-type")?.includes("application/json") ? null : await response.json();
@@ -556,7 +606,7 @@ function request(url, options = {}) {
   });
 }
 
-function validateImage(file, allowGif = false) {
+function validateImage(file, { allowGif = false, maximumSizeInBytes = 5 * 1024 * 1024 } = {}) {
   const acceptedTypes = { jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp" };
   if (allowGif) acceptedTypes.gif = "image/gif";
   const extension = file?.name.split(".").pop().toLowerCase();
@@ -564,8 +614,8 @@ function validateImage(file, allowGif = false) {
     showMessage(`Use uma imagem ${allowGif ? "JPG, PNG, WebP ou GIF" : "JPG, PNG ou WebP"} válida.`, true);
     return false;
   }
-  if (file.size > 5 * 1024 * 1024) {
-    showMessage("A imagem deve ter no máximo 5 MB.", true);
+  if (file.size > maximumSizeInBytes) {
+    showMessage(`A imagem deve ter no máximo ${maximumSizeInBytes / (1024 * 1024)} MB.`, true);
     return false;
   }
   return true;
